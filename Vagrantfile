@@ -9,11 +9,28 @@ Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
+  unless Vagrant.has_plugin?("vagrant-bindfs")
+    raise 'vagrant-bindfs plugin is not installed!'
+    exit
+  end
+
+  unless Vagrant.has_plugin?("vagrant-libvirt")
+    raise 'vagrant-libvirt plugin is not installed!'
+    exit
+  end
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.define :dbserver do |dbserver|
     dbserver.vm.box = "ubuntu/trusty64"
+
+
+
+    if Vagrant.has_plugin?("vagrant-cachier")
+        # Configure cached packages to be shared between instances of the same base box.
+        # More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage
+        config.cache.scope = :box
+    end
 
     dbserver.vm.network :private_network, :ip => "192.168.56.101"
 
@@ -28,7 +45,11 @@ Vagrant.configure(2) do |config|
 
       host = RbConfig::CONFIG['host_os']
       # Give VM 1/4 system memory & access to all cpu cores on the host
-      if host =~ /linux/
+      if host =~ /darwin/
+        cpus = `sysctl -n hw.ncpu`.to_i
+        # sysctl returns Bytes and we need to convert to MB
+        mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
+      elsif host =~ /linux/
         cpus = `nproc`.to_i
         # meminfo shows KB and we need to convert to MB
         mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4

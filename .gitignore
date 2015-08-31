@@ -1,3 +1,5 @@
 .vagrant
-project_files/
-files/ssh/
+files/ssh/*
+!files/ssh/.gitkeep
+project_files/*
+!project_files/.gitkeep

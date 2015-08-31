@@ -8,12 +8,14 @@ apt-get update >/dev/null
 apt-get upgrade >/dev/null
 echo 'Finished running initial-setup apt-get update and upgrade'
 
+#Install Curl
 type curl >/dev/null 2>&1 || {
   echo 'Installing curl'
   apt-get -y install curl >/dev/null;
   echo 'Finished installing curl'
 }
 
+#Install Git
 type git >/dev/null 2>&1 || {
   echo 'Installing git'
   apt-get -y install git-core >/dev/null;
@@ -24,6 +26,7 @@ echo 'Installing build-essential packages'
 apt-get -y install build-essential >/dev/null
 echo 'Finished installing build-essential packages'
 
+#Install Apache
 type apache2 >/dev/null 2>&1 || {
   echo 'Installing Apache'
   apt-get -y -qq install apache2 >/dev/null;
@@ -44,10 +47,12 @@ type apache2 >/dev/null 2>&1 || {
   a2ensite virtual.conf
   service apache2 reload
 
+  a2enmod rewrite
 
   echo 'Finished installing Apache'
 }
 
+#Install Mysql
 type mysql >/dev/null 2>&1 || {
   echo 'Install Mysql'
   apt-get -q -y install mysql-server >/dev/null
@@ -56,6 +61,7 @@ type mysql >/dev/null 2>&1 || {
   echo 'Finished installing Mysql'
 }
 
+#Install PHP
 type php >/dev/null 2>&1 || {
   echo 'Add PHP repo'
   add-apt-repository ppa:ondrej/php5-5.6 >/dev/null
@@ -96,7 +102,7 @@ fi
 
 if [ ! -f /etc/php5/mods-available/http.ini ]; then
     #Install pecl module non-interactively
-    printf "\n" | sudo pecl install pecl_http
+    printf "\n" | pecl install pecl_http
 
     #export and install missing extensions
 
@@ -104,12 +110,12 @@ if [ ! -f /etc/php5/mods-available/http.ini ]; then
     echo "; priority=25" | tee -a /etc/php5/mods-available/raphf.ini
     php5enmod raphf
 
-    echo "extension=/usr/lib/php5/20131226/propro.so" | sudo tee -a /etc/php5/mods-available/propro.ini
+    echo "extension=/usr/lib/php5/20131226/propro.so" | tee -a /etc/php5/mods-available/propro.ini
     echo "; priority=30" | tee -a /etc/php5/mods-available/propro.ini
     php5enmod propro
 
     #Install pecl module non-interactively
-    printf "\n" | sudo pecl install pecl_http
+    printf "\n" | pecl install pecl_http
 
     #add http module
     echo "extension=/usr/lib/php5/20131226/http.so" | tee -a /etc/php5/mods-available/http.ini

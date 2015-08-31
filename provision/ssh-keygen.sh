@@ -18,7 +18,7 @@ cat ~/.ssh/id_rsa.pub | tee ~/.ssh/authorized_keys
 cp "${VAGRANT_CORE_FOLDER}/.bash_aliases" '/home/vagrant/.bash_aliases'
 cp "${VAGRANT_CORE_FOLDER}/.bash_git" '/home/vagrant/.bash_git'
 
-chown vagrant:vagrant .bash_aliases
-chown vagrant:vagrant .bash_git
+chown vagrant:vagrant /home/vagrant/.bash_aliases
+chown vagrant:vagrant /home/vagrant/.bash_git
 
 source /home/vagrant/.bashrc
