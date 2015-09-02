@@ -63,10 +63,15 @@ Vagrant.configure(2) do |config|
         s.args = "/vagrant/files"
       end
 
-      # config.vm.provision 'shell' do |s|
-      #   s.path = "provision/install-applications.sh"
-      #   s.args = "/vagrant/files"
-      # end
+      config.vm.provision 'shell' do |s|
+        s.path = "provision/temando-certificate-install.sh"
+        s.args = "/vagrant/files"
+      end
+
+      config.vm.provision 'shell' do |s|
+        s.path = "provision/project-dependencies.sh"
+        s.args = "/vagrant/files"
+      end
 
       config.vm.provision 'shell' do |s|
         s.path = "provision/ssh-keygen.sh"

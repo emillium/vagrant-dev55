@@ -1,12 +1,9 @@
 Vagrant Development 55 Libvirt
 ====
 
+### MAC install ** UNDER Development **
 
-ISSUES
-======
-
-* composer accessing https://packages.temando.com throws a ssl error still works but slows the process down
-
+CONFIGURE_ARGS="with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib" vagrant plugin install vagrant-libvirt
 
 ### Under Developement
 
@@ -73,7 +70,7 @@ Clone the project you wish to use
 * Apache
 
 ### Mysql
- 
+
 * username = root
 * password = 123
 

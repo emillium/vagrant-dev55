@@ -15,6 +15,11 @@ chmod 600 '/home/vagrant/.ssh/authorized_keys'
 
 cat ~/.ssh/id_rsa.pub | tee ~/.ssh/authorized_keys
 
+# Know our hosts
+ssh-keyscan -H 104.236.178.120 >> ~/.ssh/known_hosts
+ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
+
 cp "${VAGRANT_CORE_FOLDER}/.bash_aliases" '/home/vagrant/.bash_aliases'
 cp "${VAGRANT_CORE_FOLDER}/.bash_git" '/home/vagrant/.bash_git'
 
