@@ -50,13 +50,18 @@ Vagrant.configure(2) do |config|
         # sysctl returns Bytes and we need to convert to MB
         mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
       elsif host =~ /linux/
-        cpus = `nproc`.to_i
+        cpus = `nproc`.to_i / 2
         # meminfo shows KB and we need to convert to MB
         mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
       end
 
       domain.memory = mem
-      domain.cpus = cpus
+      domain.cpus = cpus.ceil
+      domain.volume_cache = 'none'
+
+      config.vm.provision 'shell' do |s|
+        s.path = "provision/swap.sh"
+      end
 
       config.vm.provision 'shell' do |s|
         s.path = "provision/initial-setup.sh"
@@ -64,12 +69,12 @@ Vagrant.configure(2) do |config|
       end
 
       config.vm.provision 'shell' do |s|
-        s.path = "provision/temando-certificate-install.sh"
+        s.path = "provision/project-dependencies.sh"
         s.args = "/vagrant/files"
       end
 
       config.vm.provision 'shell' do |s|
-        s.path = "provision/project-dependencies.sh"
+        s.path = "provision/shell.sh"
         s.args = "/vagrant/files"
       end
 

@@ -15,11 +15,11 @@ if [ ! -f /etc/php5/mods-available/http.ini ]; then
 
     #export and install missing extensions
 
-    echo "extension=/usr/lib/php5/20131226/raphf.so" | tee -a /etc/php5/mods-available/raphf.ini
+    echo "extension=/usr/lib/php5/20121212/raphf.so" | tee -a /etc/php5/mods-available/raphf.ini
     echo "; priority=25" | tee -a /etc/php5/mods-available/raphf.ini
     php5enmod raphf
 
-    echo "extension=/usr/lib/php5/20131226/propro.so" | tee -a /etc/php5/mods-available/propro.ini
+    echo "extension=/usr/lib/php5/20121212/propro.so" | tee -a /etc/php5/mods-available/propro.ini
     echo "; priority=30" | tee -a /etc/php5/mods-available/propro.ini
     php5enmod propro
 
@@ -27,7 +27,7 @@ if [ ! -f /etc/php5/mods-available/http.ini ]; then
     printf "\n" | pecl install pecl_http
 
     #add http module
-    echo "extension=/usr/lib/php5/20131226/http.so" | tee -a /etc/php5/mods-available/http.ini
+    echo "extension=/usr/lib/php5/20121212/http.so" | tee -a /etc/php5/mods-available/http.ini
     echo "; priority=35" | tee -a /etc/php5/mods-available/http.ini
     php5enmod http
 
@@ -43,6 +43,14 @@ type ant >/dev/null 2>&1 || {
 if ! grep -n 'export APPLICATION_ENV="development"' /home/vagrant/.profile;
   then
     echo 'export APPLICATION_ENV="development"' | tee -a /home/vagrant/.profile
+fi
+
+if ! grep -n 'xdebug.idekey=PHPSTORM' /etc/php5/mods-available/xdebug.ini;
+  then
+    echo 'export APPLICATION_ENV="development"' | tee -a /home/vagrant/.profile
+    yes | cp "${VAGRANT_CORE_FOLDER}/xdebug/xdebug.ini" /etc/php5/mods-available
+    php5dismod xdebug
+    php5denmod xdebug
 fi
 
 #Nodejs items required by single sign on
