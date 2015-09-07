@@ -40,6 +40,11 @@ type ant >/dev/null 2>&1 || {
   echo 'Finished installing ant'
 }
 
+if ! grep -n '127.0.0.1 single-sign-on.vagrant.dev55' /etc/hosts;
+  then
+    echo '127.0.0.1 single-sign-on.vagrant.dev55' | tee -a /etc/hosts
+fi
+
 if ! grep -n 'export APPLICATION_ENV="development"' /home/vagrant/.profile;
   then
     echo 'export APPLICATION_ENV="development"' | tee -a /home/vagrant/.profile
@@ -47,10 +52,9 @@ fi
 
 if ! grep -n 'xdebug.idekey=PHPSTORM' /etc/php5/mods-available/xdebug.ini;
   then
-    echo 'export APPLICATION_ENV="development"' | tee -a /home/vagrant/.profile
     yes | cp "${VAGRANT_CORE_FOLDER}/xdebug/xdebug.ini" /etc/php5/mods-available
     php5dismod xdebug
-    php5denmod xdebug
+    php5enmod xdebug
 fi
 
 #Nodejs items required by single sign on

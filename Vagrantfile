@@ -57,7 +57,7 @@ Vagrant.configure(2) do |config|
 
       domain.memory = mem
       domain.cpus = cpus.ceil
-      domain.volume_cache = 'none'
+      domain.volume_cache = 'unsafe'
 
       config.vm.provision 'shell' do |s|
         s.path = "provision/swap.sh"
@@ -81,6 +81,10 @@ Vagrant.configure(2) do |config|
       config.vm.provision 'shell' do |s|
         s.path = "provision/ssh-keygen.sh"
         s.args = "/vagrant/files"
+      end
+
+      config.vm.provision 'shell' do |s|
+        s.path = "provision/adminer.sh"
       end
     end
   end

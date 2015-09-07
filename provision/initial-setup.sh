@@ -40,7 +40,7 @@ type apache2 >/dev/null 2>&1 || {
 
   a2enmod ssl
   mkdir /etc/apache2/ssl
-  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj "/C=AU/ST=QLD/L=Brisbane/O=Dis/CN=*vagrant.dev55"
+  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj "/C=AU/ST=QLD/L=Brisbane/O=Dis/CN=*.vagrant.dev55"
 
   cp "${VAGRANT_CORE_FOLDER}/apache/virtual.conf" '/etc/apache2/sites-available/virtual.conf'
   a2enmod vhost_alias
