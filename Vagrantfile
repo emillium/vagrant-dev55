@@ -22,7 +22,7 @@ Vagrant.configure(2) do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.define :dbserver do |dbserver|
-    dbserver.vm.box = "ubuntu/trusty64"
+    dbserver.vm.box = "s3than/trusty64"
 
 
 
@@ -35,7 +35,7 @@ Vagrant.configure(2) do |config|
     dbserver.vm.network :private_network, :ip => "192.168.56.101"
 
     dbserver.vm.synced_folder "./project_files/", "/mnt/vagrant-1", id: "1", type: 'nfs'
-    dbserver.bindfs.bind_folder "/mnt/vagrant-1", "/home/vagrant/www", owner: "vagrant", group: "www-data", perms: "u=rwX:g=rwX:o=rD"
+    dbserver.bindfs.bind_folder "/mnt/vagrant-1", "/home/vagrant/project_files", owner: "vagrant", group: "www-data", perms: "u=rwX:g=rwX:o=rD"
 
     dbserver.vm.provider :libvirt do |domain|
       # Create a forwarded port mapping which allows access to a specific port
