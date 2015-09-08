@@ -1,49 +1,22 @@
 Vagrant Development 55 Libvirt
 ====
 
-### MAC install ** UNDER Development **
-
-CONFIGURE_ARGS="with-libvirt-include=/usr/include/libvirt with-libvirt-lib=/usr/lib" vagrant plugin install vagrant-libvirt
-
 ### Under Developement
 
-The Vagrant Development uses libvirt for creating a vagrant box
+The Vagrant Development using multiple providers for creating a vagrant box
 
-## Currently the box must be downloaded and installed manually prior to use.
-
-## Host Setup
+### Host Setup
 
 #### 1. Download & install requirements
 
-* Libvirt installation
+## Windows Setup
+[Windows Readme](docs/windows.MD)
 
-```
-egrep -c ‘(svm|vmx)’ /proc/cpuinfo
-```
+## Linux Setup
+[Linux Readme](docs/linux.MD)
 
-A 0 indicates that your CPU doesn’t support hardware virtualization, while a 1 or more indicates that it does. 
-You may still have to enable hardware virtualization support in your computer’s BIOS, even if this command returns a 1 or more.
-
-```
-sudo apt-get install qemu-kvm libvirt-bin bridge-utils virt-manager
-```
-
-You may need to perform this step
-
-```
-sudo adduser name libvirtd
-```
-
-Logout of and log back in, kvm is now available
-
-* Vagrant: https://www.vagrantup.com/downloads.html
-
-### Vagrant Plugins (Required)
-* vagrant-bindfs (Setting up permissions for NFS folders) https://github.com/gael-ian/vagrant-bindfs
-* vagrant-libvirt (Setting libvirt(kvm/qemu) as a provider) https://github.com/pradels/vagrant-libvirt
-
-### Vagrant Plugins (Optional)
-* vagrant-cachier (Caches Box setups) https://github.com/fgrehm/vagrant-cachier
+## Mac Setup
+[Mac Readme](docs/mac.MD)
 
 #### 2. Clone this repository
 
@@ -66,7 +39,7 @@ This key will be copied into your virtual machine. Make sure it is configured to
 
 #### 4. Initialise vagrant virtual machine
 
-* Important set provider for first provision
+* Important set provider if you are not using the default
 ```
 vagrant up --provider=libvirt
 ```
