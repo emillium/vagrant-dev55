@@ -1,10 +1,8 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 
-VAGRANT_CORE_FOLDER=$(echo "$1")
-
-cp "${VAGRANT_CORE_FOLDER}/ssh/id_rsa" '/home/vagrant/.ssh/'
-cp "${VAGRANT_CORE_FOLDER}/ssh/id_rsa.pub" '/home/vagrant/.ssh/'
+cp "/vagrant/provision/files/ssh/id_rsa" '/home/vagrant/.ssh/'
+cp "/vagrant/provision/files/ssh/id_rsa.pub" '/home/vagrant/.ssh/'
 
 chown -R vagrant '/home/vagrant/.ssh'
 chgrp -R vagrant '/home/vagrant/.ssh'
@@ -17,7 +15,7 @@ if [ -f ~/.ssh/id_rsa.pub ]; then
   cat ~/.ssh/id_rsa.pub | tee ~/.ssh/authorized_keys
 fi
 
-# Know our hosts
+# # Know our hosts
 ssh-keyscan -H 104.236.178.120 >> ~/.ssh/known_hosts
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts

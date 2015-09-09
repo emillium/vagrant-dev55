@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 export DEBIAN_FRONTEND=noninteractive
 
-VAGRANT_CORE_FOLDER=$(echo "$1")
-
 #Install Composer
 if [ ! -f /usr/local/bin/composer ]; then
     curl -sS https://getcomposer.org/installer | php >/dev/null
@@ -52,7 +50,7 @@ fi
 
 if ! grep -n 'xdebug.idekey=PHPSTORM' /etc/php5/mods-available/xdebug.ini;
   then
-    yes | cp "${VAGRANT_CORE_FOLDER}/xdebug/xdebug.ini" /etc/php5/mods-available
+    yes | cp "/vagrant/provision/files/xdebug/xdebug.ini" /etc/php5/mods-available
     php5dismod xdebug
     php5enmod xdebug
 fi
