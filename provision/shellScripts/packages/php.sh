@@ -16,6 +16,9 @@ type php >/dev/null 2>&1 || {
 
   # install deps API project
   apt-get install libmagic-dev libpcre3-dev imagemagick libmagickwand-dev libmagickcore-dev
+
+  echo "extension=imagick.so" | sudo tee -a /etc/php5/mods-available/imagick.ini
+  php5enmod imagick
 }
 
 if [ ! -f /etc/php5/mods-available/http.ini ]; then
