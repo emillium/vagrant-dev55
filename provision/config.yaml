@@ -1,0 +1,176 @@
+vagrantfile:
+    vm:
+        box: s3than/trusty64
+        hostname: vagrant.dev55
+        #Memory and Cpus if set to empty will use auto generated
+        memory: ''
+        cpus: ''
+        chosen_provider: virtualbox #libvirt
+        network:
+            private_network: 192.168.56.101
+            forwarded_port:
+                vflnp_tndgksczzty4:
+                    host: '9592'
+                    guest: '22'
+        provider:
+            virtualbox:
+                modifyvm:
+                    natdnshostresolver1: 'on'
+                    nictype1: virtio
+                    nictype2: virtio
+                    natdnsproxy1: 'on'
+        # provider:
+        #     libvirt:
+        #         volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
+        synced_folder:
+            vflsf_h02wtbye8m7t:
+                source: ./project_files/
+                target: /home/vagrant/project_files
+                owner: vagrant
+                group: www-data
+        usable_port_range:
+            start: 10200
+            stop: 10500
+    # ssh: #todo
+    #     known_hosts:
+    #         - 104.236.178.120
+    #         - github.com
+    #         - bitbucket.org
+    server:
+        install: '1'
+        packages:
+            - htop
+            - build-essential
+            - git-core
+            - curl
+            - wget
+#apache:  #todo
+#    install: '1'
+#    settings:
+#        user: www-data
+#        group: www-data
+#        default_vhost: true
+#        manage_user: false
+#        manage_group: false
+#        sendfile: 0
+#    modules:
+#        - proxy_fcgi
+#        - rewrite
+#    vhosts:
+#        av_bh7ad1la8bv3:
+#            servername: vagrant.dev55
+#            serveraliases:
+#                - '*.vagrant.dev55'
+#            virtual_docroot: '/var/www/%1/www'
+#            docroot: /
+#            port: '80'
+#            setenv:
+#                - 'APPLICATION_ENV development'
+#            custom_fragment: ''
+#            ssl: '0'
+#            ssl_cert: ''
+#            ssl_key: ''
+#            ssl_chain: ''
+#            ssl_certs_dir: ''
+#            ssl_protocol: ''
+#            ssl_cipher: ''
+#            directories:
+#                avd_6h9la0xg3rzd:
+#                    path: /
+#                    allow_override:
+#                        - All
+#                    require:
+#                        - 'all granted'
+#                    custom_fragment: ''
+#                    files_match:
+#                        avdfm_6h9la0xg3rzd:
+#                            path: \.php$
+#                            sethandler: 'proxy:fcgi://127.0.0.1:9000'
+#                            custom_fragment: ''
+#                            provider: filesmatch
+#                    provider: directory
+#php:
+#    install: '1'
+#    settings:
+#        version: '55'
+#    modules:
+#        pear: {  }
+#        pecl: {  }
+#        php:
+#          - cli
+#          - intl
+#          - mcrypt
+#          - curl
+#          - ssh2
+#          - redis
+#          - mysql
+#    ini:
+#        display_errors: On
+#        error_reporting: '-1'
+#        session.save_path: /var/lib/php/session
+#        date.timezone: UTC
+#        realpath_cache_size: 4096k
+#        realpath_cache_ttl: 7200
+#    fpm_ini:
+#        error_log: /var/log/php-fpm.log
+#    fpm_pools:
+#        phpfp_bnzenpwhjo8o:
+#            ini:
+#                prefix: www
+#                listen: '127.0.0.1:9000'
+#                security.limit_extensions: .php
+#                user: www-data
+#                group: www-data
+#    composer: '1'
+#    composer_home: ''
+#xdebug:
+#    install: '1'
+#    settings:
+#        xdebug.default_enable: '1'
+#        xdebug.remote_autostart: '0'
+#        xdebug.remote_connect_back: '1'
+#        xdebug.remote_enable: '1'
+#        xdebug.remote_handler: dbgp
+#        xdebug.remote_port: '9000'
+#ruby:
+#    install: '1'
+#    versions: {  }
+#python:
+#    install: '1'
+#    packages: {  }
+#    versions: {  }
+#nodejs:
+#    install: '1'
+#    npm_packages:
+#        - npm
+#        - grunt
+#        - grunt-cli
+#        - bower
+#mysql:
+#    install: '1'
+#    settings:
+#        version: '5.5'
+#        root_password: '123'
+#        override_options:
+#            mysqld:
+#                bind-address: '0.0.0.0'
+#    adminer: '1'
+#    users:
+#        mysqlnu_o3hb07ozdene:
+#            name: dbuser
+#            password: '123'
+#    grants:
+#        mysqlng_sasxirouvk0t:
+#            user: dbuser
+#            table: '*.*'
+#            privileges:
+#                - ALL
+#mailcatcher:
+#    install: '1'
+#    settings:
+#        smtp_ip: 0.0.0.0
+#        smtp_port: 1025
+#        http_ip: 0.0.0.0
+#        http_port: '1080'
+#        mailcatcher_path: /usr/local/rvm/wrappers/default
+#        from_email_method: inline

@@ -1,0 +1,5 @@
+.vagrant
+files/ssh/*
+!files/ssh/.gitkeep
+project_files/*
+!project_files/.gitkeep
