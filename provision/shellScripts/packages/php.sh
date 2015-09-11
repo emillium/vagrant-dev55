@@ -11,13 +11,12 @@ type php >/dev/null 2>&1 || {
   apt-get install python-software-properties >/dev/null
 
   echo 'Install PHP'
-  apt-get -y -qq install php5 php5-cli php5-mysql php5-curl php5-intl php5-ssh2 php5-redis php-http php5-dev php5-xdebug >/dev/null
+  apt-get -y -qq install php5 php5-cli php5-mysql php5-curl php5-intl php5-ssh2 php5-redis php-http php5-dev php5-xdebug php5-imagick >/dev/null
   echo 'Finished installing PHP'
 
   # install deps API project
-  apt-get install libmagic-dev libpcre3-dev imagemagick libmagickwand-dev libmagickcore-dev
+  apt-get -y -qq install libmagic-dev libpcre3-dev imagemagick libmagickwand-dev libmagickcore-dev
 
-  echo "extension=imagick.so" | sudo tee -a /etc/php5/mods-available/imagick.ini
   php5enmod imagick
 }
 
