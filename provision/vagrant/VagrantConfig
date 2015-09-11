@@ -106,8 +106,9 @@ Vagrant.configure('2') do |config|
         libvirt.cpus = cpus
 
         data['vm']['provider']['libvirt'].each do |key, value|
-          libvirt.key = value
+          libvirt.send("#{key}=", value)
         end
+        
       end
     end
 
@@ -126,7 +127,7 @@ Vagrant.configure('2') do |config|
         end
       end
     end
-    
+
     config.vm.provision 'shell' do |s|
       s.path = "provision/shellScripts/initial-setup.sh"
     end
@@ -142,18 +143,6 @@ Vagrant.configure('2') do |config|
     config.vm.provision 'shell' do |s|
       s.path = "provision/shellScripts/ssh-keygen.sh"
     end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/adminer.sh"
-    end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/ioncube.sh"
-    end
     
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/newrelic.sh"
-    end
-
   end
 end

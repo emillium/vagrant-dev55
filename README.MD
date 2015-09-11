@@ -1,4 +1,4 @@
-Vagrant Development 55 Libvirt
+Vagrant Development 55 Multi provisioned
 ====
 
 ### Under Developement
@@ -21,13 +21,13 @@ The Vagrant Development using multiple providers for creating a vagrant box
 #### 2. Clone this repository
 
 ```
-git clone git@104.236.178.120:container-boxes/vagrant-dev55-libvirt.git
-cd vagrant-dev55-libvirt
+git clone git@104.236.178.120:container-boxes/vagrant-dev55.git
+cd vagrant-dev55
 ```
 
 #### 3. Configure the sandbox
 
-Go to the ssh directory called ```ssh``` in the /files/ssh dir and copy your deployment keys into it.
+Go to the ssh directory called ```ssh``` in the /provision/files/ssh dir and copy your deployment keys into it.
 
 ```
 cd files/ssh
