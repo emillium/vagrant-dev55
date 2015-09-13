@@ -12,3 +12,8 @@ sh /vagrant/provision/shellScripts/packages/nodejs.sh
 sh /vagrant/provision/shellScripts/packages/ant.sh
 
 sh /vagrant/provision/shellScripts/packages/adminer.sh
+
+sh /vagrant/provision/shellScripts/packages/ioncube.sh
+
+sh /vagrant/provision/shellScripts/packages/newrelic.sh
+

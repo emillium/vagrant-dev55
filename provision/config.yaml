@@ -39,3 +39,5 @@ vagrantfile:
             - git-core
             - curl
             - wget
+            - multitail
+            - tmux
