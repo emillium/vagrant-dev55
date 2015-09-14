@@ -30,7 +30,7 @@ cd vagrant-dev55
 Go to the ssh directory called ```ssh``` in the /provision/files/ssh dir and copy your deployment keys into it.
 
 ```
-cd files/ssh
+cd provision/files/ssh
 cp ~/.ssh/mysshkeys id_rsa
 cp ~/.ssh/mysshkeys.pub id_rsa.pub
 ```
