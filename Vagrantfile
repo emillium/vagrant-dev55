@@ -7,8 +7,8 @@ host = Vagrant::Util::Platform.platform
 require 'yaml'
 
 ## Whatever vagrant dependencies we need here
-unless Vagrant.has_plugin?("vagrant-bindfs")
-  raise 'vagrant-bindfs plugin is not installed!'
+unless Vagrant.has_plugin?("vagrant-bindfs") || Vagrant.has_plugin?("vagrant-sshfs")
+  raise 'vagrant-bindfs and/or vagrant-sshfs plugin is not installed!'
   exit
 end
 
