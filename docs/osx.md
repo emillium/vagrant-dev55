@@ -25,8 +25,8 @@ vagrant plugin install vagrant-bindfs
 
 ### Configure
 
-Open up ```provision/config.yml``` and edit the *sync_type* field, change it's value to 'sshfs'.
+Open up ```provision/config.yaml``` and edit the *sync_type* field, change it's value to 'sshfs'.
 You could also use NFS, however it is much slower on OSX than tradional Linux systems. If using 'sshfs'
-set the *source* field to something like ```~/mnt```. It just needs to point to an empty directory. 
-vagrant-sshfs will mount the ```/home/vagrant/project_files``` directory from within the VM to your 
+set the *source* field to something like ```~/mnt```. It just needs to point to an empty directory.
+vagrant-sshfs will mount the ```/home/vagrant/project_files``` directory from within the VM to your
 source directory on the host.
