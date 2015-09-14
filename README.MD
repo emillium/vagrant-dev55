@@ -10,13 +10,13 @@ The Vagrant Development using multiple providers for creating a vagrant box
 #### 1. Download & install requirements
 
 ## Windows Setup
-[Windows Readme](docs/WINDOWS.MD)
+[Windows Readme](docs/windows.md)
 
 ## Linux Setup
-[Linux Readme](docs/LINUX.MD)
+[Linux Readme](docs/linux.md)
 
 ## Mac Setup
-[Mac Readme](docs/MAC.MD)
+[Mac Readme](docs/osx.md)
 
 #### 2. Clone this repository
 

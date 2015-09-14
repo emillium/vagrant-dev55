@@ -76,6 +76,12 @@ Vagrant.configure('2') do |config|
           else
             dbserver.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: 'nfs', nfs_udp: false
           end
+        elsif folder['sync_type'] == 'sshfs'
+          config.sshfs.prompt_create_folders = true
+          config.sshfs.sudo = false
+          config.sshfs.paths = { folder['target'] => folder['source']}
+          # set permissions on project folder
+          config.vm.provision "shell", inline: "chown -R #{sync_owner}:#{sync_group} #{folder['target']}"
         elsif folder['sync_type'] == 'smb'
           smb__host     = !folder['smb']['smb_host'].nil? ? folder['smb']['smb_host'] : nil
           smb__username = !folder['smb']['smb_username'].nil? ? folder['smb']['smb_username'] : nil
