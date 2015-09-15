@@ -6,6 +6,7 @@ vm:
     memory: ''
     cpus: ''
     chosen_provider: virtualbox #libvirt
+    ssh_forward: 0
     network:
         private_network: 192.168.56.101
         forwarded_port:
