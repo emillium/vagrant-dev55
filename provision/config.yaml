@@ -5,26 +5,30 @@ vagrantfile:
         #Memory and Cpus if set to empty will use auto generated
         memory: ''
         cpus: ''
-        chosen_provider: libvirt #libvirt
+        chosen_provider: vagrant #libvirt
         network:
             private_network: 192.168.56.101
             forwarded_port:
                 vflnp_tndgksczzty4:
                     host: '9592'
                     guest: '22'
-#        provider:
-#            virtualbox:
-#                modifyvm:
-#                    natdnshostresolver1: 'on'
-#                    nictype1: virtio
-#                    nictype2: virtio
-#                    natdnsproxy1: 'on'
         provider:
-            libvirt:
-                volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
+            virtualbox:
+                modifyvm:
+                    natdnshostresolver1: 'on'
+                    nictype1: virtio
+                    nictype2: virtio
+                    natdnsproxy1: 'on'
+        # provider:
+        #     libvirt:
+        #         volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
         synced_folder:
             vflsf_h02wtbye8m7t:
-                sync_type: 'nfs'
+                sync_type: 'default'
+                smb:
+                    smb_host: ''
+                    smb_username: ''
+                    smb_password: ''
                 source: ./project_files/
                 target: /home/vagrant/project_files
                 owner: vagrant

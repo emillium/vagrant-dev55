@@ -1,4 +1,5 @@
 .vagrant
+.idea
 provision/files/ssh/*
 !provision/files/ssh/.gitkeep
 project_files/*
