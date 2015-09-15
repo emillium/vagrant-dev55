@@ -10,6 +10,8 @@
     - curl
     - wget
     - python-software-properties
+    - ntp
+    - build-essential
 
 - name: Install Extra Packages
   sudo: yes
@@ -28,4 +30,3 @@
 - name: Set default system language pack
   shell: locale-gen {{server.locale}}
   sudo: yes
-
