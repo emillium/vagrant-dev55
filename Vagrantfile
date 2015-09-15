@@ -6,12 +6,6 @@ host = Vagrant::Util::Platform.platform
 
 require 'yaml'
 
-## Whatever vagrant dependencies we need here
-unless Vagrant.has_plugin?("vagrant-bindfs") || Vagrant.has_plugin?("vagrant-sshfs")
-  raise 'vagrant-bindfs and/or vagrant-sshfs plugin is not installed!'
-  exit
-end
-
 #Use this method as it checks for cygwin, etc as well
 if Vagrant::Util::Platform.windows?
   unless Vagrant.has_plugin?("vagrant-winnfsd")
@@ -34,5 +28,11 @@ end
 configValues = YAML.load_file("#{dir}/provision/config.yaml")
 
 data = configValues['vagrantfile']
+
+## Whatever vagrant dependencies we need here
+unless Vagrant.has_plugin?("vagrant-bindfs") || Vagrant.has_plugin?("vagrant-sshfs")
+  raise 'vagrant-bindfs and/or vagrant-sshfs plugin is not installed!'
+  exit
+end
 
 eval File.read("#{dir}/provision/vagrant/VagrantConfig")
