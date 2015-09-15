@@ -4,13 +4,18 @@
 # you're doing.
 Vagrant.configure('2') do |config|
 
-  cpus_config = "#{data['vm']['cpus']}"
-  mem_config = "#{data['vm']['memory']}"
+  cpus_config = "#{vmValues['cpus']}"
+  mem_config = "#{vmValues['memory']}"
 
-  if data['vm']['hostname'].to_s.strip.length != 0
-    config.vm.hostname = "#{data['vm']['hostname']}"
+  if vmValues['hostname'].to_s.strip.length != 0
+    config.vm.hostname = "#{vmValues['hostname']}"
   end
 
+  if vmValues['ssh_forward'] == 1
+    # this should get around the .ssh folder issue
+    config.ssh.forward_agent = true
+  end
+  
   #Use this method as it checks for cygwin, etc as well
   if Vagrant::Util::Platform.windows?
     #cpu info
@@ -20,18 +25,21 @@ Vagrant.configure('2') do |config|
   end
 
   if host =~ /linux/
+    #cpu info
     cpus = `nproc`.to_i / 2
     # meminfo shows KB and we need to convert to MB
     mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
   end
 
-  # Give VM 1/4 system memory & access to all cpu cores on the host
+
   if host =~ /darwin/
+    #cpu info
     cpus = `sysctl -n hw.ncpu`.to_i / 2
     # sysctl returns Bytes and we need to convert to MB
     mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
   end
 
+  #If values in config are set then override auto settings
   unless cpus_config == ''
     cpus = cpus_config
   end
@@ -40,6 +48,7 @@ Vagrant.configure('2') do |config|
     mem = mem_config
   end
 
+  #Round to nearest whole
   cpus = cpus.ceil
 
   #Plugin config
@@ -52,19 +61,98 @@ Vagrant.configure('2') do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.define :dbserver do |dbserver|
-    dbserver.vm.box = "#{data['vm']['box']}"
+    dbserver.vm.box = "#{vmValues['box']}"
 
-    dbserver.vm.network 'private_network', ip: "#{data['vm']['network']['private_network']}"
+    dbserver.vm.network 'private_network', ip: "#{vmValues['network']['private_network']}"
 
-    data['vm']['network']['forwarded_port'].each do |i, port|
+    vmValues['network']['forwarded_port'].each do |i, port|
       if port['guest'] != '' && port['host'] != ''
         dbserver.vm.network :forwarded_port, guest: port['guest'].to_i, host: port['host'].to_i, auto_correct: true
       end
     end
 
-    config.vm.usable_port_range = (data['vm']['usable_port_range']['start'].to_i..data['vm']['usable_port_range']['stop'].to_i)
+    config.vm.usable_port_range = (vmValues['usable_port_range']['start'].to_i..vmValues['usable_port_range']['stop'].to_i)
 
-    data['vm']['synced_folder'].each do |i, folder|
+    if vmValues['chosen_provider'].empty? || vmValues['chosen_provider'] == 'virtualbox'
+      ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+      dbserver.vm.provider :virtualbox do |virtualbox|
+        vmValues['provider']['virtualbox']['modifyvm'].each do |key, value|
+          if key == 'memory'
+            next
+          end
+
+          if key == 'cpus'
+            next
+          end
+
+          if key == 'natdnshostresolver1'
+            value = value ? 'on' : 'off'
+          end
+
+          virtualbox.customize ['modifyvm', :id, "--#{key}", "#{value}"]
+        end
+
+        virtualbox.customize ['modifyvm', :id, '--memory', mem]
+        virtualbox.customize ['modifyvm', :id, '--cpus', cpus]
+      end
+    end
+
+    if vmValues['chosen_provider'].empty? || vmValues['chosen_provider'] == 'libvirt'
+      ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
+      dbserver.vm.provider :libvirt do |libvirt|
+        libvirt.memory = mem
+        libvirt.cpus = cpus
+
+        vmValues['provider']['libvirt'].each do |key, value|
+          libvirt.send("#{key}=", value)
+        end
+      end
+    end
+
+    # If ansible is in your path it will provision from your HOST machine
+    # If ansible is not found in the path it will be instaled in the VM and provisioned from there
+    # if which('ansible-playbook')
+    #     config.vm.provision "ansible" do |ansible|
+    #         ansible.playbook = "provision/ansible/playbook.yml"
+    #         ansible.limit = 'all'
+    #     end
+    # else
+    #     config.vm.provision :shell, path: "provision/ansible/windows.sh", args: ["default"]
+    # end
+    # config.vm.provision 'shell' do |s|
+    #   s.path = "provision/shellScripts/swap.sh"
+    # end
+    #
+    # config.vm.provision "shell", inline: "sudo apt-get update"
+    # config.vm.provision "shell", inline: "sudo apt-get upgrade -y"
+    #
+    # if vmValues['server']['install'] == '1'
+    #   vmValues['server']['packages'].each do |i, value|
+    #     config.vm.provision 'shell' do |s|
+    #       s.path = "provision/shellScripts/install-packages.sh"
+    #       s.args = i
+    #     end
+    #   end
+    # end
+    #
+    # config.vm.provision 'shell' do |s|
+    #   s.path = "provision/shellScripts/initial-setup.sh"
+    # end
+    #
+    # config.vm.provision 'shell' do |s|
+    #   s.path = "provision/shellScripts/project-dependencies.sh"
+    # end
+    #
+    # config.vm.provision 'shell' do |s|
+    #   s.path = "provision/shellScripts/shell.sh"
+    # end
+    #
+    # config.vm.provision 'shell' do |s|
+    #   s.path = "provision/shellScripts/ssh-keygen.sh"
+    # end
+
+    #Synced Folders to end
+    vmValues['synced_folder'].each do |i, folder|
       if folder['source'] != '' && folder['target'] != ''
         sync_owner = !folder['owner'].nil? ? folder['owner'] : 'www-data'
         sync_group = !folder['group'].nil? ? folder['group'] : 'www-data'
@@ -102,76 +190,5 @@ Vagrant.configure('2') do |config|
         end
       end
     end
-
-    if data['vm']['chosen_provider'].empty? || data['vm']['chosen_provider'] == 'virtualbox'
-      ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
-
-      dbserver.vm.provider :virtualbox do |virtualbox|
-        data['vm']['provider']['virtualbox']['modifyvm'].each do |key, value|
-          if key == 'memory'
-            next
-          end
-
-          if key == 'cpus'
-            next
-          end
-
-          if key == 'natdnshostresolver1'
-            value = value ? 'on' : 'off'
-          end
-
-          virtualbox.customize ['modifyvm', :id, "--#{key}", "#{value}"]
-        end
-
-        virtualbox.customize ['modifyvm', :id, '--memory', mem]
-        virtualbox.customize ['modifyvm', :id, '--cpus', cpus]
-      end
-    end
-
-    if data['vm']['chosen_provider'].empty? || data['vm']['chosen_provider'] == 'libvirt'
-      ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
-      dbserver.vm.provider :libvirt do |libvirt|
-        libvirt.memory = mem
-        libvirt.cpus = cpus
-
-        data['vm']['provider']['libvirt'].each do |key, value|
-          libvirt.send("#{key}=", value)
-        end
-        
-      end
-    end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/swap.sh"
-    end
-
-    config.vm.provision "shell", inline: "sudo apt-get update"
-    config.vm.provision "shell", inline: "sudo apt-get upgrade -y"
-
-    if data['server']['install'] == '1'
-      data['server']['packages'].each do |i, value|
-        config.vm.provision 'shell' do |s|
-          s.path = "provision/shellScripts/install-packages.sh"
-          s.args = i
-        end
-      end
-    end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/initial-setup.sh"
-    end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/project-dependencies.sh"
-    end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/shell.sh"
-    end
-
-    config.vm.provision 'shell' do |s|
-      s.path = "provision/shellScripts/ssh-keygen.sh"
-    end
-    
   end
 end
