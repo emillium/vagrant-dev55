@@ -1,6 +1,8 @@
 #!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 
+sh /vagrant/provision/shellScripts/packages/base.sh
+
 sh /vagrant/provision/shellScripts/packages/apache.sh
 
 sh /vagrant/provision/shellScripts/packages/mysql.sh
@@ -16,4 +18,3 @@ sh /vagrant/provision/shellScripts/packages/adminer.sh
 sh /vagrant/provision/shellScripts/packages/ioncube.sh
 
 sh /vagrant/provision/shellScripts/packages/newrelic.sh
-
