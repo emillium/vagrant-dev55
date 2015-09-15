@@ -41,8 +41,6 @@ if [ ! -f /etc/php5/mods-available/http.ini ]; then
     echo "extension=/usr/lib/php5/20121212/http.so" | tee -a /etc/php5/mods-available/http.ini
     echo "; priority=35" | tee -a /etc/php5/mods-available/http.ini
     php5enmod http
-
-    echo "File not found!"
 fi
 
 if ! grep -n 'xdebug.idekey=PHPSTORM' /etc/php5/mods-available/xdebug.ini;
