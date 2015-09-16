@@ -5,7 +5,7 @@
     - vars/config.yml
   roles:
     - server
-    - vagrant_local
+    - vm
     - apache
     - mariadb
     - php
