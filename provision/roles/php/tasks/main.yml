@@ -23,3 +23,5 @@
 
 - include: configure.yml
 - include: pecl.yml
+
+- include: pecl_dependents.yml

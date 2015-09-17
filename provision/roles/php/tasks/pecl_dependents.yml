@@ -1,0 +1,32 @@
+- name: Install
+  apt: pkg="php5-dev" state=present
+  when: php.pecl_with_dependents is defined
+
+- name: Install Required Packages
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.0.package }}
+  register: pecl_result
+  changed_when: "'already installed' not in pecl_result.stdout"
+  failed_when: "pecl_result.stderr or ('You should add \"extension={{ item.0.package }}.so\" to php.ini' not in pecl_result.stdout)"
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: php.pecl_with_dependents is defined
+
+- name: Create extension .ini file
+  template: >
+    src="extension.tpl"
+    dest="/etc/php5/mods-available/{{ item.0.package }}.ini"
+    owner="root"
+    group="root"
+    mode=0644
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: php.pecl_with_dependents is defined
+
+- name: Enable Required extension
+  shell: php5enmod {{ item.0.package }}
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: php.pecl_with_dependents is defined

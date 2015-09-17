@@ -2,7 +2,7 @@
 
 # Update Repositories
 echo 'Running update'
-sudo apt-get update
+# sudo apt-get update
 
 sudo apt-get install -y -qq software-properties-common >/dev/null
 
