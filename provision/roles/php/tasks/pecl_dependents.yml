@@ -2,10 +2,16 @@
   apt: pkg="php5-dev" state=present
   when: php.pecl_with_dependents is defined
 
+# - name: Test
+#   debug: msg="{{ item.1.package }}"
+#   with_subelements:
+#      - php.pecl_with_dependents
+#      - depends_on
+#   when: php.pecl_with_dependents is defined
 - name: Create extension .ini file
   template: >
     src="extension.tpl"
-    dest="/etc/php5/mods-available/{{ item.0.package }}.ini"
+    dest="/etc/php5/mods-available/{{ item.1.package }}.ini"
     owner="root"
     group="root"
     mode=0644
@@ -14,15 +20,42 @@
       - depends_on
   when: php.pecl_with_dependents is defined
 
-- block:
-    - name: Install Required Packages
-      shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.0.package }} || php5enmod {{ item.0.package }}
-      register: pecl_result
-      changed_when: "'already installed' not in pecl_result.stdout"
-      failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
-      with_subelements:
-          - php.pecl_with_dependents
-          - depends_on
-      when: php.pecl_with_dependents is defined
-  rescue:
-    - file: path=/etc/php5/mods-available/{{ item.0.package }}.ini state=absent
+- name: Install Required Packages
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }} || php5enmod {{ item.1.package }}
+  register: pecl_result
+  ignore_errors: True
+  changed_when: "'already installed' not in pecl_result.stdout"
+  failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
+  register: pecl_result_error
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: php.pecl_with_dependents is defined
+
+- name: Remove Invalid Packages
+  file: path=/etc/php5/mods-available/{{ item.1.package }}.ini state=absent
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: pecl_result_error | failed
+
+#   - action: shell foo
+#   register: foo_result
+#   ignore_errors: True
+#
+# - action: shell bar
+#   when: foo_result | failed
+
+
+# - block:
+#     - name: Install Required Packages
+#       shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.0.package }} || php5enmod {{ item.0.package }}
+#       register: pecl_result
+#       changed_when: "'already installed' not in pecl_result.stdout"
+#       failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
+#       with_subelements:
+#           - php.pecl_with_dependents
+#           - depends_on
+#       when: php.pecl_with_dependents is defined
+#   rescue:
+#     - file: path=/etc/php5/mods-available/{{ item.0.package }}.ini state=absent

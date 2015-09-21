@@ -20,4 +20,4 @@ type ansible >/dev/null 2>&1 || {
     echo 'Ansible Installed'
 }
 echo 'Run Ansible'
-sudo PYTHONUNBUFFERED=1 ansible-playbook /vagrant/provision/playbook.yml -e hostname=$1 --connection=local
+sudo PYTHONUNBUFFERED=1 ansible-playbook /vagrant/provision/playbook.yml -e hostname=$1 --connection=local -vvv

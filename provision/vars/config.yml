@@ -62,8 +62,8 @@ php:
           depends_on:
                - package: raphf
                  prority: 25
-              #  - package: propro
-              #    prority: 25
+               - package: propro
+                 prority: 30
           prority: 35
 xdebug:
     install: '1'
