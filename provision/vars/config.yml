@@ -5,7 +5,7 @@ vm:
     #Memory and Cpus if set to empty will use auto generated
     memory: ''
     cpus: ''
-    chosen_provider: libvirt #libvirt
+    chosen_provider: virtualbox #libvirt
     ssh_forward: 0
     network:
         private_network: 192.168.56.101
@@ -13,20 +13,24 @@ vm:
             vflnp_tndgksczzty4:
                 host: '9592'
                 guest: '22'
-#    provider:
-#        virtualbox:
-#            modifyvm:
-#                natdnshostresolver1: 'on'
-#                nictype1: virtio
-#                nictype2: virtio
-#                natdnsproxy1: 'on'
     provider:
-        libvirt:
-            volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
+        virtualbox:
+            modifyvm:
+                natdnshostresolver1: 'on'
+                nictype1: virtio
+                nictype2: virtio
+                natdnsproxy1: 'on'
+    # provider:
+    #     libvirt:
+    #         volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
     synced_folder:
         vflsf_h02wtbye8m7t:
-            sync_type: 'sshfs'
-            source:  ~/Projects/Temando/project_mnt_test
+            sync_type: 'default'
+            smb:
+                smb_host: ''
+                smb_username: ''
+                smb_password: ''
+            source: ./project_files/
             target: /home/vagrant/project_files
             owner: vagrant
             group: www-data
@@ -55,13 +59,18 @@ php:
     packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2]
     pecl_with_dependents:
         - package: pecl_http
-          prority: 35
+          package_name: http
           depends_on:
                - package: raphf
+                 package_name: raphf
                  priority: 25
                - package: propro
+                 package_name: propro
                  priority: 30
+          priority: 35
 xdebug:
     install: '1'
 composer:
+    install: '1'
+nodejs:
     install: '1'

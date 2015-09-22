@@ -4,11 +4,13 @@
   vars_files:
     - vars/config.yml
   roles:
-    # - server
-    # - vm
-    # - apache
-    # - mariadb
-    - php
-    # - xdebug
-    # - composer
-    # - app
+     - server
+     - vm
+     - nodejs
+#     - apache
+#     - mariadb
+#     - php
+#     - xdebug
+#     - composer
+#     - app
+
