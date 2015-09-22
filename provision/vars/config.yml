@@ -5,7 +5,7 @@ vm:
     #Memory and Cpus if set to empty will use auto generated
     memory: ''
     cpus: ''
-    chosen_provider: virtualbox #libvirt
+    chosen_provider: libvirt #libvirt
     ssh_forward: 0
     network:
         private_network: 192.168.56.101
@@ -13,24 +13,20 @@ vm:
             vflnp_tndgksczzty4:
                 host: '9592'
                 guest: '22'
+#    provider:
+#        virtualbox:
+#            modifyvm:
+#                natdnshostresolver1: 'on'
+#                nictype1: virtio
+#                nictype2: virtio
+#                natdnsproxy1: 'on'
     provider:
-        virtualbox:
-            modifyvm:
-                natdnshostresolver1: 'on'
-                nictype1: virtio
-                nictype2: virtio
-                natdnsproxy1: 'on'
-    # provider:
-    #     libvirt:
-    #         volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
+        libvirt:
+            volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
     synced_folder:
         vflsf_h02wtbye8m7t:
-            sync_type: 'default'
-            smb:
-                smb_host: ''
-                smb_username: ''
-                smb_password: ''
-            source: ./project_files/
+            sync_type: 'sshfs'
+            source:  ~/Projects/Temando/project_mnt_test
             target: /home/vagrant/project_files
             owner: vagrant
             group: www-data
@@ -59,12 +55,12 @@ php:
     packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2]
     pecl_with_dependents:
         - package: pecl_http
+          prority: 35
           depends_on:
                - package: raphf
-                 prority: 25
+                 priority: 25
                - package: propro
-                 prority: 30
-          prority: 35
+                 priority: 30
 xdebug:
     install: '1'
 composer:

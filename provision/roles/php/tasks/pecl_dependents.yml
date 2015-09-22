@@ -1,16 +1,10 @@
-- name: Install
+- name: Install php5-dev
   apt: pkg="php5-dev" state=present
   when: php.pecl_with_dependents is defined
 
-# - name: Test
-#   debug: msg="{{ item.1.package }}"
-#   with_subelements:
-#      - php.pecl_with_dependents
-#      - depends_on
-#   when: php.pecl_with_dependents is defined
 - name: Create extension .ini file
   template: >
-    src="extension.tpl"
+    src="dependent_extension.tpl"
     dest="/etc/php5/mods-available/{{ item.1.package }}.ini"
     owner="root"
     group="root"
@@ -24,8 +18,6 @@
   shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }} || php5enmod {{ item.1.package }}
   register: pecl_result
   ignore_errors: True
-  changed_when: "'already installed' not in pecl_result.stdout"
-  failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
   register: pecl_result_error
   with_subelements:
       - php.pecl_with_dependents
@@ -39,12 +31,10 @@
       - depends_on
   when: pecl_result_error | failed
 
-#   - action: shell foo
-#   register: foo_result
-#   ignore_errors: True
-#
-# - action: shell bar
-#   when: foo_result | failed
+- name: Install Pecl Packages
+  debug: msg="{{ item }}"
+  with_items:
+      - php.pecl_with_dependents
 
 
 # - block:
