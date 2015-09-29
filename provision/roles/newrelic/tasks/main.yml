@@ -1,0 +1,14 @@
+---
+- name: Install new relic repository
+  sudo: yes
+  shell: wget -qO - https://download.newrelic.com/548C16BF.gpg | apt-key add -
+  when: newrelic.install == "1"
+
+- sudo: yes
+  shell: deb http://apt.newrelic.com/debian/ newrelic non-free | tee -a /etc/apt/sources.list.d/newrelic.list
+  when: newrelic.install == "1"
+
+- name: Install New Relic
+  sudo: yes
+  apt: name=newrelic-php5 update_cache=yes
+  when: newrelic.install == "1"

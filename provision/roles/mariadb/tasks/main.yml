@@ -56,17 +56,27 @@
 
 ##Install Adminer Requires Apache
 - name: Install Adminer
+  sudo: yes
   file: path=/usr/share/adminer state=directory mode=0755
+  when: mariadb.install == '1' and mariadb.adminer == '1'
+
+- name: Download Adminer
+  sudo: yes
   get_url: url=http://www.adminer.org/latest.php dest=/usr/share/adminer/latest.php
   when: mariadb.install == '1' and mariadb.adminer == '1'
 
 - name: Link Adminer
-  file: src=/usr/share/adminer/latest.php dest=/usr/share/adminer/adminer.php owner=foo group=foo state=link
+  sudo: yes
+  file: src=/usr/share/adminer/latest.php dest=/usr/share/adminer/adminer.php owner=vagrant group=vagrant state=link
   when: mariadb.install == '1' and mariadb.adminer == '1'
 
-- name: Set Apache Conf for Adminer
+- name: Create Apache Conf for Adminer
   sudo: yes
   lineinfile: dest=/etc/apache2/conf-available/adminer.conf line="Alias /adminer.php /usr/share/adminer/adminer.php" create=yes state=present
+  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
+
+- name: Install Apache Conf for Adminer
+  sudo: yes
   shell: a2enconf adminer.conf
   notify: restart apache
   when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
