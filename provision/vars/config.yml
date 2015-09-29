@@ -35,7 +35,7 @@ vm:
         stop: 10500
 server:
     install: '1'
-    packages: [git-core, htop, imagemagick, multitail, tmux]
+    packages: [git-core, htop, imagemagick, multitail, tmux, ant]
     timezone: UTC
     locale: en_AU.UTF-8
 apache:
@@ -49,6 +49,7 @@ mariadb:
     user: user
     password: password
     dump: ''
+    adminer: '1'
 php:
     install: '1'
     ppa: php5
@@ -69,7 +70,8 @@ xdebug:
 composer:
     install: '1'
 nodejs:
-    install: '0'
+    install: '1'
+    nodejs_version: '0.12'
     nodejs_forever: false
     nodejs_npm_global_packages:
       - name: bower

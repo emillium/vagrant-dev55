@@ -17,7 +17,7 @@
   sudo: yes
   apt: pkg={{ item }} state=latest
   with_items: server.packages
-  when: server.packages is defined
+  when: server.packages is defined and server.install == "1"
 
 - name: Configure the timezone
   sudo: yes

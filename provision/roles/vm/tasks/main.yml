@@ -9,3 +9,9 @@
 
 - name: Update /etc/hosts
   lineinfile: dest=/etc/hosts regexp='^127\.0\.0\.1' line='127.0.0.1 localhost {{ vm.hostname }}' owner=root group=root mode=0644
+
+- name: Add single-sign-on to hosts file
+  lineinfile: dest=/etc/hosts line='127.0.0.1 single-sign-on.{{ vm.hostname }}' owner=root group=root mode=0644
+
+- name: Set development
+  lineinfile: dest=/home/vagrant/.profile line="APPLICATION_ENV='development'"
