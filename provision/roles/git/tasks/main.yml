@@ -5,9 +5,9 @@
   when: git.install == '1'
 
 - name: Set Global Git Username
-  command: git config --global user.name "{{ git.user_name }}"
+  shell: git config --global user.name "{{ git.user_name }}"
   when: git.install == '1' and git.user_name
 
 - name: Set Global Git Email
-  command: git config --global user.email "{{ git.email }}"
+  shell: git config --global user.email {{ git.email }}
   when: git.install == '1' and git.email

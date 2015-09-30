@@ -5,7 +5,7 @@
     - vars/config.yml
   roles:
      - server
-#     - git
+     - git
      - vm
      - nodejs
      - apache
