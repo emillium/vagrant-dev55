@@ -7,7 +7,14 @@ vm:
     cpus: ''
 #    chosen_provider: libvirt #libvirt
     chosen_provider: virtualbox #libvirt
-    ssh_forward: 0
+    ssh:
+        forward: '0'
+        known_hosts_command: "ssh-keyscan -H -T 10"
+        known_hosts_file: "/etc/ssh/ssh_known_hosts"
+        known_hosts:
+          - 104.236.178.120
+          - github.com
+          - bitbucket.org
     network:
         private_network: 192.168.56.101
         forwarded_port:
@@ -34,11 +41,42 @@ vm:
     usable_port_range:
         start: 10200
         stop: 10500
+dot_files:
+    install: '0'
+git:
+    install: '1'
+    user_name: 'test'
+    email: 'test'
 server:
     install: '1'
     packages: [git-core, htop, imagemagick, multitail, tmux, ant]
     timezone: UTC
     locale: en_AU.UTF-8
+    hosts:
+        - url: 127.0.0.1
+          name: single-sign-on
+          local: '1'
+        - url: 192.168.20.21
+          name: packages.temando.com
+          local: '0'
+        - url: 192.168.7.175
+          name: webservices.hunterexpress.com.au
+          local: '0'
+        - url: 192.168.7.175
+          name: hunterexpress.com.au
+          local: '0'
+        - url: 192.168.7.175
+          name: farmapi.fastway.org
+          local: '0'
+        - url: 192.168.7.175
+          name: api.fastway.org
+          local: '0'
+        - url: 192.168.7.175
+          name: au.api.fastway.org
+          local: '0'
+        - url: 192.168.7.175
+          name: xmlapi.emea.netdespatch.com
+          local: '0'
 apache:
     install: '1'
 mariadb:
@@ -71,6 +109,13 @@ xdebug:
     install: '1'
 composer:
     install: '1'
+    auth: #Use http://jsontoyaml.com/ copy your auth.json and output the yaml like below
+        github-oauth:
+            github.com: "test"
+        http-basic:
+            packages.temando.com:
+                username: "test"
+                password: "test"
 nodejs:
     install: '1'
     nodejs_version: '0.12'

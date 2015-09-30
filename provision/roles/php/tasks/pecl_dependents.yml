@@ -15,7 +15,8 @@
   when: php.pecl_with_dependents is defined
 
 - name: Install Required Packages
-  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }} || php5enmod {{ item.1.package_name }}
+  sudo: yes
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }} || sudo php5enmod {{ item.1.package_name }}
   register: pecl_result
   ignore_errors: True
   register: pecl_result_error
@@ -50,6 +51,7 @@
   when: php.pecl_with_dependents is defined
 
 - name: Enable extension
+  sudo: yes
   shell: php5enmod {{ item.package_name }}
   with_items: php.pecl_with_dependents
   when: php.pecl_with_dependents is defined

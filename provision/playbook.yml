@@ -4,11 +4,12 @@
   vars_files:
     - vars/config.yml
   roles:
-#     - server
-#     - vm
-#     - nodejs
-#     - apache
-#     - mariadb
+     - server
+#     - git
+     - vm
+     - nodejs
+     - apache
+     - mariadb
      - php
      - newrelic
      - xdebug

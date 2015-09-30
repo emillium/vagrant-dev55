@@ -1,24 +1,33 @@
-- name: Create Ion Cube Folder
-  file: path=~/ioncube state=directory
-  when: php.install == '1' and php.ioncube == '1'
+- name: Check whether /etc/php5/apache2/php.ini contains ioncube
+  command: grep -Fxq "zend_extension = /usr/lib/php5/20121212/ioncube_loader_lin_5.5.so" /etc/php5/apache2/php.ini
+  register: checkmyconf
+  always_run: True
+  ignore_errors: True
+  changed_when: False
 
-- file: path=~/ioncube/tmp state=directory
-  when: php.install == '1' and php.ioncube == '1'
+- name: Create Ion Cube Folder
+  file: path=/home/vagrant/ioncube state=directory
+  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
+
+- file: path=/home/vagrant/ioncube/tmp state=directory
+  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Download Ion Cube
-  get_url: url=http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz dest=~/ioncube/ioncube_loaders_lin_x86-64.tar.gz
-  when: php.install == '1' and php.ioncube == '1'
+  get_url: url=http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz dest=/home/vagrant/ioncube/ioncube_loaders_lin_x86-64.tar.gz
+  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Unpack IonCube
-  unarchive: src=~/ioncube/ioncube_loaders_lin_x86-64.tar.gz dest=~/ioncube/tmp
-  when: php.install == '1' and php.ioncube == '1'
+  unarchive: src=/home/vagrant/ioncube/ioncube_loaders_lin_x86-64.tar.gz dest=/home/vagrant/ioncube/tmp
+  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Copy IonCube
   sudo: yes
-  copy: src=~/ioncube/tmp/ioncube_loader_lin_5.5.so dest=/usr/lib/php5/20121212/
-  when: php.install == '1' and php.ioncube == '1'
+  copy: src=/home/vagrant/ioncube/tmp/ioncube/ioncube_loader_lin_5.5.so dest=/usr/lib/php5/20121212/
+  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Intialise IonCube
   sudo: yes
-  shell: sed -i '3i\'"zend_extension = /usr/lib/php5/20121212/ioncube_loader_lin_5.5.so" /etc/php5/apache2/php.ini
-  when: php.install == '1' and php.ioncube == '1'
+  shell: 'sed -i 3i\ "zend_extension = /usr/lib/php5/20121212/ioncube_loader_lin_5.5.so" /etc/php5/apache2/php.ini'
+  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
+
+- file: path=/home/vagrant/ioncube state=absent
