@@ -14,7 +14,7 @@
   register: xdebug_ini
 
 - name: Copy xdebug settings
-  copy: src=/vagrant/provision/files/xdebug/xdebug.ini dest=/etc/php5/mod-available/xdebug.ini
+  command: sudo cp /vagrant/provision/files/xdebug/xdebug.ini /etc/php5/mods-available/
   when: xdebug_ini.stat.exists == True and is_installed.rc == 0 and xdebug.install == '1'
 
 - name: Enable extension

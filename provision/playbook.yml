@@ -5,6 +5,7 @@
     - vars/config.yml
   roles:
      - server
+     - ssh
      - git
      - vm
      - nodejs
@@ -15,4 +16,3 @@
      - xdebug
      - composer
      - app
-

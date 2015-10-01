@@ -1,5 +1,4 @@
 ---
-
 - stat: path=/vagrant/provision/files/ssh/id_rsa
   register: private_key_host
 
@@ -13,12 +12,12 @@
   register: public_key_guest
 
 - name: send private key to guest
-  copy: src=files/ssh/id_rsa dest=/home/vagrant/.ssh/id_rsa
-  when: private_key.stat.exists == True and vm.ssh.forward == '0'
+  command: cp /vagrant/provision/files/ssh/id_rsa /home/vagrant/.ssh/
+  when: private_key_host.stat.exists == True and vm.ssh.forward == '0'
 
 - name: send private key to guest
-  copy: src=files/ssh/id_rsa.pub dest=/home/vagrant/.ssh/id_rsa.pub
-  when: public_key.stat.exists == True and vm.ssh.forward == '0'
+  command: cp /vagrant/provision/files/ssh/id_rsa.pub /home/vagrant/.ssh/
+  when: public_key_host.stat.exists == True and vm.ssh.forward == '0'
 
 - file: path=/home/vagrant/.ssh state=directory mode=0700 owner=vagrant group=vagrant
 
@@ -30,14 +29,14 @@
 
 - file: path=/home/vagrant/.ssh/authorized_keys mode=0600
 
-- copy: src=/home/vagrant/.ssh/id_rsa.pub dest=/home/vagrant/.ssh/authorized_keys content=yes
+- command: cat /home/vagrant/.ssh/id_rsa.pub > /home/vagrant/.ssh/authorized_keys
   when: public_key_guest.stat.exists == True
 
 - name: Make sure the known hosts file exists
   file: "path={{ vm.ssh.known_hosts_file }} state=touch"
 
 - name: Check host name availability
-  shell: "ssh-keygen -f {{ vm.ssh.known_hosts_file }} -F {{ item }}"
+  shell: "sudo ssh-keygen -f {{ vm.ssh.known_hosts_file }} -F {{ item }}"
   with_items: vm.ssh.known_hosts
   register: known_host_results
 

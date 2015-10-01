@@ -1,14 +1,21 @@
 ---
-- name: Install new relic repository
-  sudo: yes
-  shell: wget -qO - https://download.newrelic.com/548C16BF.gpg | apt-key add -
-  when: newrelic.install == "1"
+- name: Installing dependencies
+  apt:
+    pkg: apt-transport-https
+    state: present
 
-- sudo: yes
-  shell: deb http://apt.newrelic.com/debian/ newrelic non-free | tee -a /etc/apt/sources.list.d/newrelic.list
-  when: newrelic.install == "1"
+- name: Adding APT key
+  apt_key:
+    url: https://download.newrelic.com/548C16BF.gpg
 
-- name: Install New Relic
-  sudo: yes
-  apt: name=newrelic-php5 update_cache=yes
-  when: newrelic.install == "1"
+- name: Add APT repository
+  apt_repository:
+    repo: "deb http://apt.newrelic.com/debian/ newrelic non-free"
+    update_cache: yes
+
+- name: Installing packages
+  apt:
+    pkg: "{{ item }}"
+    state: present
+  with_items:
+    - newrelic-php5

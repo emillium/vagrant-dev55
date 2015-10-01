@@ -17,13 +17,15 @@
   when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Unpack IonCube
-  unarchive: src=/home/vagrant/ioncube/ioncube_loaders_lin_x86-64.tar.gz dest=/home/vagrant/ioncube/tmp
+  unarchive: src=/home/vagrant/ioncube/ioncube_loaders_lin_x86-64.tar.gz dest=/home/vagrant/ioncube/tmp copy=no
   when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
+- stat: path=/home/vagrant/ioncube/tmp/ioncube/ioncube_loader_lin_5.5.so
+  register: ioncube_stat
+
 - name: Copy IonCube
-  sudo: yes
-  copy: src=/home/vagrant/ioncube/tmp/ioncube/ioncube_loader_lin_5.5.so dest=/usr/lib/php5/20121212/
-  when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
+  command: mv /home/vagrant/ioncube/tmp/ioncube/ioncube_loader_lin_5.5.so /usr/lib/php5/20121212/
+  when: ioncube_stat.stat.exists and php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Intialise IonCube
   sudo: yes
