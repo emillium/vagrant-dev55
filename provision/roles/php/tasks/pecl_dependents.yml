@@ -16,7 +16,7 @@
 
 - name: Install Required Packages
   sudo: yes
-  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }} || sudo php5enmod {{ item.1.package_name }}
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }}
   register: pecl_result
   ignore_errors: True
   register: pecl_result_error
@@ -24,6 +24,13 @@
       - php.pecl_with_dependents
       - depends_on
   when: php.pecl_with_dependents is defined
+
+- name: Enable extension
+  shell: php5enmod {{ item.1.package_name }}
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: pecl_result_error | success
 
 - name: Remove Invalid Packages
   file: path=/etc/php5/mods-available/{{ item.1.package_name }}.ini state=absent

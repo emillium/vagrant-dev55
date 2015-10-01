@@ -4,10 +4,6 @@
   apt: pkg=git-core state=latest
   when: git.install == '1'
 
-- name: Set Global Git Username
-  shell: git config --global user.name "{{ git.user_name }}"
-  when: git.install == '1' and git.user_name
-
-- name: Set Global Git Email
-  shell: git config --global user.email {{ git.email }}
-  when: git.install == '1' and git.email
+- name: Copy in git config
+  template: src=git-config.tpl dest=/home/vagrant/.gitconfig
+  when: git.install == '1' and git.email and git.user_name

@@ -1,5 +1,5 @@
 ---
-- script: /vagrant/provision/shellScripts/swap.sh
+- command: /bin/sh "/vagrant/provision/shellScripts/swap.sh"
 
 - name: Update apt
   sudo: yes
