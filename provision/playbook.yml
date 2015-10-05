@@ -15,4 +15,5 @@
      - newrelic
      - xdebug
      - composer
+     - dotfiles
      - app
