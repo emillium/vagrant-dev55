@@ -17,9 +17,10 @@
 - name: Install Required Packages
   sudo: yes
   shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }}
-  register: pecl_result
   ignore_errors: True
   register: pecl_result_error
+  changed_when: "'already installed' not in pecl_result_error.stdout"
+  failed_when: "pecl_result_error.stderr or ('ERROR' in pecl_result_error.stdout)"
   with_subelements:
       - php.pecl_with_dependents
       - depends_on
