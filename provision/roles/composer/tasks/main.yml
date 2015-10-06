@@ -14,5 +14,5 @@
 
 - file: path=/home/vagrant/.composer/auth.json state=touch
 
-- lineinfile: dest=/home/vagrant/.composer/auth.json line="{{composer.auth | to_json}}"
+- lineinfile: dest=/home/vagrant/.composer/auth.json line="{{composer.auth | to_nice_json}}"
   when: is_installed.rc == 0 and composer.install == '1' and composer.auth
