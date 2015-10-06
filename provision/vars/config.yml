@@ -39,7 +39,7 @@ vm:
             owner: vagrant
             group: www-data
     usable_port_range:
-        start: 10200
+        start: 9000
         stop: 10500
 dot_files:
     install: '0'
