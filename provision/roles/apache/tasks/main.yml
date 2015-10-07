@@ -16,21 +16,11 @@
     - ssl
   when: apache.install == "1"
 
-- shell: apache2 -v
-  register: apache_version
-  when: apache.install == "1"
-
 - name: Change default apache2.4 site
   sudo: yes
   template: src=vhost24.conf.tpl dest=/etc/apache2/sites-available/000-default.conf
   notify: restart apache
-  when: apache_version.stdout.find('Apache/2.4.') != -1 and apache.install == "1"
-
-- name: Change default apache2.2 site
-  sudo: yes
-  template: src=vhost22.conf.tpl dest=/etc/apache2/sites-available/default
-  notify: restart apache
-  when: apache_version.stdout.find('Apache/2.2.') != -1 and apache.install == "1"
+  when: apache.install == "1"
 
 - user: name=vagrant groups=www-data append=yes
 
