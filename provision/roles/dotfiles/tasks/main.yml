@@ -1,0 +1,7 @@
+---
+- name: Install Bash Files
+  shell: yes n | cp -i /vagrant/provision/files/bash/.bash_aliases /home/vagrant/.bash_aliases
+  when: dot_files.install == '0'
+
+- shell: yes n | cp -i /vagrant/provision/files/bash/.bash_git /home/vagrant/.bash_git
+  when: dot_files.install == '0'

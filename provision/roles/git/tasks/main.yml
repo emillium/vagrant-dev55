@@ -1,0 +1,9 @@
+---
+- name: Install Git
+  sudo: yes
+  apt: pkg=git-core state=latest
+  when: git.install == '1'
+
+- name: Copy in git config
+  template: src=git-config.tpl dest=/home/vagrant/.gitconfig
+  when: git.install == '1' and git.email and git.user_name

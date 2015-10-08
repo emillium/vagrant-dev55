@@ -1,0 +1,178 @@
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure('2') do |config|
+
+  cpus_config = "#{vmValues['cpus']}"
+  mem_config = "#{vmValues['memory']}"
+
+  if vmValues['hostname'].to_s.strip.length != 0
+    config.vm.hostname = "#{vmValues['hostname']}"
+  end
+
+  if vmValues['ssh']['forward'] == 1
+    # this should get around the .ssh folder issue
+    config.ssh.forward_agent = true
+  end
+
+  #Use this method as it checks for cygwin, etc as well
+  if Vagrant::Util::Platform.windows?
+    #cpu info
+    cpus = `wmic computersystem get numberoflogicalprocessors`.split("\n")[2].to_i / 2
+    #mem info
+    mem = `wmic OS get TotalVisibleMemorySize`.split("\n")[2].to_i / 1024 / 4
+  end
+
+  if host =~ /linux/
+    #cpu info
+    cpus = `nproc`.to_i / 2
+    # meminfo shows KB and we need to convert to MB
+    mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 4
+  end
+
+
+  if host =~ /darwin/
+    #cpu info
+    cpus = `sysctl -n hw.ncpu`.to_i / 2
+    # sysctl returns Bytes and we need to convert to MB
+    mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
+  end
+
+  #If values in config are set then override auto settings
+  unless cpus_config == ''
+    cpus = cpus_config
+  end
+
+  unless mem_config == ''
+    mem = mem_config
+  end
+
+  #Round to nearest whole
+  cpus = cpus.ceil
+
+  #Plugin config
+  if Vagrant.has_plugin?("vagrant-cachier")
+      # Configure cached packages to be shared between instances of the same base box.
+      # More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage
+      config.cache.scope = :box
+  end
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://atlas.hashicorp.com/search.
+  config.vm.define :dbserver1 do |dbserver1|
+    dbserver1.vm.box = "#{vmValues['box']}"
+
+    dbserver1.vm.network 'private_network', ip: "#{vmValues['network']['private_network']}"
+
+    vmValues['network']['forwarded_port'].each do |i, port|
+      if port['guest'] != '' && port['host'] != ''
+        dbserver1.vm.network :forwarded_port, guest: port['guest'].to_i, host: port['host'].to_i, auto_correct: true
+      end
+    end
+
+    config.vm.usable_port_range = (vmValues['usable_port_range']['start'].to_i..vmValues['usable_port_range']['stop'].to_i)
+
+    if vmValues['chosen_provider'].empty? || vmValues['chosen_provider'] == 'virtualbox'
+      ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
+      dbserver1.vm.provider :virtualbox do |virtualbox|
+        vmValues['provider']['virtualbox']['modifyvm'].each do |key, value|
+          if key == 'memory'
+            next
+          end
+
+          if key == 'cpus'
+            next
+          end
+
+          if key == 'natdnshostresolver1'
+            value = value ? 'on' : 'off'
+          end
+
+          virtualbox.customize ['modifyvm', :id, "--#{key}", "#{value}"]
+        end
+
+        virtualbox.customize ['modifyvm', :id, '--memory', mem]
+        virtualbox.customize ['modifyvm', :id, '--cpus', cpus]
+      end
+    end
+
+    if vmValues['chosen_provider'].empty? || vmValues['chosen_provider'] == 'libvirt'
+      ENV['VAGRANT_DEFAULT_PROVIDER'] = 'libvirt'
+      dbserver1.vm.provider :libvirt do |libvirt|
+        libvirt.memory = mem
+        libvirt.cpus = cpus
+
+        vmValues['provider']['libvirt'].each do |key, value|
+          libvirt.send("#{key}=", value)
+        end
+      end
+    end
+
+    # Check to determine whether we're on a windows or linux/os-x host,
+    # later on we use this to launch ansible in the supported way
+    # source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+    def which(cmd)
+        exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+        ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+            exts.each { |ext|
+                exe = File.join(path, "#{cmd}#{ext}")
+                return exe if File.executable? exe
+            }
+        end
+        return nil
+    end
+
+    # If ansible is in your path it will provision from your HOST machine
+    # If ansible is not found in the path it will be installed in the VM and provisioned from there
+    if which('ansible-playbook')
+        config.vm.provision "ansible" do |ansible|
+            ansible.playbook = "provision/playbook.yml"
+            ansible.limit = 'all'
+        end
+    else
+        config.vm.provision :shell, path: "provision/windows.sh", args: ["default", vmValues['network']['private_network']]
+    end
+
+    #Synced Folders to end
+    vmValues['synced_folder'].each do |i, folder|
+      if folder['host_machine'] != '' && folder['guest_machine'] != ''
+        sync_owner = !folder['owner'].nil? ? folder['owner'] : 'www-data'
+        sync_group = !folder['group'].nil? ? folder['group'] : 'www-data'
+
+        if folder['sync_type'] == 'nfs'
+          if Vagrant.has_plugin?('vagrant-bindfs')
+            dbserver1.vm.synced_folder "#{folder['host_machine']}", "/mnt/vagrant-#{i}", id: "#{i}", type: 'nfs'
+            dbserver1.bindfs.bind_folder "/mnt/vagrant-#{i}", "#{folder['guest_machine']}", owner: sync_owner, group: sync_group, perms: "u=rwX:g=rwX:o=rD"
+          else
+            dbserver1.vm.synced_folder "#{folder['host_machine']}", "#{folder['guest_machine']}", id: "#{i}", type: 'nfs', nfs_udp: false
+          end
+        elsif folder['sync_type'] == 'sshfs'
+          config.sshfs.prompt_create_folders = true
+          config.sshfs.sudo = false
+          # SSHFS src is the host_machine absolute path to the folder in the box, mountpoint is the folder in the host machine. mountpoint can be an absolute path, or relative to the Vagrantfile
+          config.sshfs.paths = { folder['guest_machine'] => folder['host_machine']}
+          # set permissions on project folder
+          config.vm.provision "shell", inline: "chown -R #{sync_owner}:#{sync_group} #{folder['guest_machine']}"
+        elsif folder['sync_type'] == 'smb'
+          smb__host     = !folder['smb']['smb_host'].nil? ? folder['smb']['smb_host'] : nil
+          smb__username = !folder['smb']['smb_username'].nil? ? folder['smb']['smb_username'] : nil
+          smb__password = !folder['smb']['smb_password'].nil? ? folder['smb']['smb_password'] : nil
+
+          config.vm.synced_folder "#{folder['host_machine']}", "#{folder['guest_machine']}", id: "#{i}", type: 'smb',
+            group: sync_group, owner: sync_owner, smb_host: smb__host, smb_username: smb__username, smb_password: smb__password
+        elsif folder['sync_type'] == 'rsync'
+          rsync_args    = !folder['rsync']['args'].nil? ? folder['rsync']['args'] : ['--verbose', '--archive', '-z']
+          rsync_auto    = !folder['rsync']['auto'].nil? ? folder['rsync']['auto'] : true
+          rsync_exclude = !folder['rsync']['exclude'].nil? ? folder['rsync']['exclude'] : ['.vagrant/']
+
+          dbserver1.vm.synced_folder "#{folder['host_machine']}", "#{folder['guest_machine']}", id: "#{i}",
+            rsync__args: rsync_args, rsync__exclude: rsync_exclude, rsync__auto: rsync_auto, type: 'rsync', group: sync_group, owner: sync_owner
+        else
+          dbserver1.vm.synced_folder "#{folder['host_machine']}", "#{folder['guest_machine']}", id: "#{i}",
+            group: sync_group, owner: sync_owner, mount_options: ['dmode=775', 'fmode=774']
+        end
+      end
+    end
+  end
+end

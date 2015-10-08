@@ -1,0 +1,11 @@
+---
+- name: Set the hostname in /etc/hostname
+  shell: echo {{ vm.hostname }} > /etc/hostname
+  when: vm.hostname is defined
+
+- name: Set the hostname
+  shell: hostname {{ vm.hostname }}
+  when: vm.hostname is defined
+
+- name: Set development
+  lineinfile: dest=/etc/environment line="APPLICATION_ENV='development'"

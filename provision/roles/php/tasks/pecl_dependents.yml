@@ -1,0 +1,65 @@
+- name: Install php5-dev
+  apt: pkg="php5-dev" state=present
+  when: php.pecl_with_dependents is defined
+
+- name: Create extension .ini file
+  template: >
+    src="dependent_extension.tpl"
+    dest="/etc/php5/mods-available/{{ item.1.package_name }}.ini"
+    owner="root"
+    group="root"
+    mode=0644
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: php.pecl_with_dependents is defined
+
+- name: Install Required Packages
+  sudo: yes
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.1.package }}
+  ignore_errors: True
+  register: pecl_result_error
+  changed_when: "'already installed' not in pecl_result_error.stdout"
+  failed_when: "pecl_result_error.stderr or ('ERROR' in pecl_result_error.stdout)"
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: php.pecl_with_dependents is defined
+
+- name: Enable extension
+  shell: php5enmod {{ item.1.package_name }}
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: pecl_result_error | success
+
+- name: Remove Invalid Packages
+  file: path=/etc/php5/mods-available/{{ item.1.package_name }}.ini state=absent
+  with_subelements:
+      - php.pecl_with_dependents
+      - depends_on
+  when: pecl_result_error | failed
+
+- name: Install Pecl Package
+  shell: echo "\n\n\n\n\n\n\n\n\n" | pecl install {{ item.package }}
+  register: pecl_result
+  changed_when: "'already installed' not in pecl_result.stdout"
+  failed_when: "pecl_result.stderr or ('ERROR' in pecl_result.stdout)"
+  with_items: php.pecl_with_dependents
+  when: php.pecl_with_dependents is defined
+
+- name: Create extension .ini file
+  template: >
+    src="priority_extension.tpl"
+    dest="/etc/php5/mods-available/{{ item.package_name }}.ini"
+    owner="root"
+    group="root"
+    mode=0644
+  with_items: php.pecl_with_dependents
+  when: php.pecl_with_dependents is defined
+
+- name: Enable extension
+  sudo: yes
+  shell: php5enmod {{ item.package_name }}
+  with_items: php.pecl_with_dependents
+  when: php.pecl_with_dependents is defined

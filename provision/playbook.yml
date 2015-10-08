@@ -1,0 +1,19 @@
+---
+- hosts: all
+  sudo: true
+  vars_files:
+    - vars/config.yml
+  roles:
+     - server
+     - ssh
+     - git
+     - vm
+     - nodejs
+     - apache
+     - mariadb
+     - php
+     - newrelic
+     - xdebug
+     - composer
+     - dotfiles
+     - app

@@ -4,7 +4,7 @@
 * Virtual Box
 * Libvirt
 
-# Libvirt installation
+# Libvirt installation ** Currently only tested on 15.04
 
 ```
 egrep -c ‘(svm|vmx)’ /proc/cpuinfo
@@ -27,16 +27,16 @@ Logout of and log back in, kvm is now available
 
 * Vagrant: https://www.vagrantup.com/downloads.html
 
-### Vagrant Plugins (Required)
-## All
-* vagrant-bindfs (Setting up permissions for NFS folders) https://github.com/gael-ian/vagrant-bindfs
-
-## Linux
-* vagrant-libvirt (Setting libvirt(kvm/qemu) as a provider) https://github.com/pradels/vagrant-libvirt
-
 ### Vagrant Plugins (Optional)
 ## All
 * vagrant-cachier (Caches Box setups) https://github.com/fgrehm/vagrant-cachier
+* vagrant-bindfs (Setting up permissions for NFS folders) https://github.com/gael-ian/vagrant-bindfs
+
+## Linux
+* vagrant-sshfs (sshfs support) https://github.com/fabiokr/vagrant-sshfs/
 
 # Virtual Box Provider
 * vagrant plugin install vagrant-vbguest (update virtualbox guest editions) https://github.com/dotless-de/vagrant-vbguest
+
+# LibVirt Provider
+* vagrant-libvirt (Setting libvirt(kvm/qemu) as a provider) https://github.com/pradels/vagrant-libvirt

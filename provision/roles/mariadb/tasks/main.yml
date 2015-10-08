@@ -1,0 +1,82 @@
+---
+# Retrieve the current hostname, because {{ ansible_hostname }} still contains the old name
+- shell: hostname
+  register: current_hostname
+
+- name: Add MariaDB-Repository
+  sudo: yes
+  apt_repository: repo='deb http://mirror3.layerjet.com/mariadb/repo/10.1/ubuntu {{ ansible_distribution_release }} main' state=present
+  when: mariadb.install == '1'
+
+- name: Add Key for MariaDB Repository
+  sudo: yes
+  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
+  when: mariadb.install == '1'
+
+- name: Update apt
+  sudo: yes
+  apt: update_cache=yes
+  when: mariadb.install == '1'
+
+- name: mariadb | Install MariaDB Packages
+  sudo: yes
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - mariadb-server
+    - python-mysqldb
+  when: mariadb.install == '1'
+
+- name: mariadb | Update root password for all root accounts
+  mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ mariadb.root_password }} login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - "{{ current_hostname.stdout | lower }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: mariadb.install == '1'
+
+- name: mariadb | Ensure anonymous users are not in the database
+  mysql_user: name='' host={{ item }} state=absent login_user=root login_password={{ mariadb.root_password }}
+  with_items:
+    - localhost
+    - "{{ current_hostname.stdout | lower }}"
+  when: mariadb.install == '1'
+
+- name: mariadb | Create databases
+  mysql_db: name={{ mariadb.database }} state=present login_user=root login_password={{ mariadb.root_password }}
+  when: mariadb.install == '1'
+
+- name: mariadb | Import dump
+  mysql_db: name={{ mariadb.database }} state=import login_user=root login_password={{ mariadb.root_password }} target=/vagrant/{{ mariadb.dump }}
+  when: mariadb.dump and mariadb.install == '1'
+
+- name: mariadb | Create users
+  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv={{ mariadb.database }}.*:ALL state=present login_user=root login_password={{ mariadb.root_password }}
+  when: mariadb.install == '1'
+
+##Install Adminer Requires Apache
+- name: Install Adminer
+  sudo: yes
+  file: path=/usr/share/adminer state=directory mode=0755
+  when: mariadb.install == '1' and mariadb.adminer == '1'
+
+- name: Download Adminer
+  sudo: yes
+  get_url: url=http://www.adminer.org/latest.php dest=/usr/share/adminer/latest.php
+  when: mariadb.install == '1' and mariadb.adminer == '1'
+
+- name: Link Adminer
+  sudo: yes
+  file: src=/usr/share/adminer/latest.php dest=/usr/share/adminer/adminer.php owner=vagrant group=vagrant state=link
+  when: mariadb.install == '1' and mariadb.adminer == '1'
+
+- name: Create Apache Conf for Adminer
+  sudo: yes
+  lineinfile: dest=/etc/apache2/conf-available/adminer.conf line="Alias /adminer.php /usr/share/adminer/adminer.php" create=yes state=present
+  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
+
+- name: Install Apache Conf for Adminer
+  sudo: yes
+  shell: a2enconf adminer.conf
+  notify: restart apache
+  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'

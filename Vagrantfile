@@ -6,33 +6,46 @@ host = Vagrant::Util::Platform.platform
 
 require 'yaml'
 
-## Whatever vagrant dependencies we need here
-unless Vagrant.has_plugin?("vagrant-bindfs") || Vagrant.has_plugin?("vagrant-sshfs")
-  raise 'vagrant-bindfs and/or vagrant-sshfs plugin is not installed!'
-  exit
-end
+configValues = YAML.load_file("#{dir}/provision/vars/config.yml")
+
+vmValues = configValues['vm']
 
 #Use this method as it checks for cygwin, etc as well
+## Whatever vagrant dependencies we need here for windows
 if Vagrant::Util::Platform.windows?
-  unless Vagrant.has_plugin?("vagrant-winnfsd")
-    raise 'vagrant-winnfsd plugin is not installed!'
-    exit
+  vmValues['synced_folder'].each do |i, folder|
+    if folder['sync_type'] == 'nfs'
+      unless Vagrant.has_plugin?("vagrant-winnfsd")
+        raise 'vagrant-winnfsd plugin is not installed!'
+        exit
+      end
+    end
   end
 end
 
+## Whatever vagrant dependencies we need here for linux
 if host =~ /linux/
-  unless Vagrant.has_plugin?("vagrant-libvirt")
-    raise 'vagrant-libvirt plugin is not installed!'
-    exit
+  if vmValues['chosen_provider'] == 'libvirt'
+    unless Vagrant.has_plugin?("vagrant-libvirt")
+      raise 'vagrant-libvirt plugin is not installed!'
+      exit
+    end
   end
 end
 
+## Whatever vagrant dependencies we need here for mac os
 if host =~ /darwin/
-  ## Whatever vagrant dependencies we need here
+
 end
 
-configValues = YAML.load_file("#{dir}/provision/config.yaml")
+## Whatever global vagrant dependencies we need here
+vmValues['synced_folder'].each do |i, folder|
+  if folder['sync_type'] == 'sshfs'
+    unless Vagrant.has_plugin?("vagrant-sshfs")
+      raise 'vagrant-bindfs and/or vagrant-sshfs plugin is not installed!'
+      exit
+    end
+  end
+end
 
-data = configValues['vagrantfile']
-
-eval File.read("#{dir}/provision/vagrant/VagrantConfig")
+eval File.read("#{dir}/provision/VagrantConfig")

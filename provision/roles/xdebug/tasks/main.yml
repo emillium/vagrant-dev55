@@ -1,0 +1,22 @@
+---
+- name: Check if Php is installed
+  command: dpkg-query -l php5
+  register: is_installed
+  failed_when: is_installed.rc > 1
+  changed_when: no
+
+- name: Install xDebug
+  sudo: yes
+  apt: pkg=php5-xdebug state=latest
+  when: is_installed.rc == 0 and xdebug.install == '1'
+
+- stat: path=/vagrant/provision/files/xdebug/xdebug.ini
+  register: xdebug_ini
+
+- name: Copy xdebug settings
+  command: sudo cp /vagrant/provision/files/xdebug/xdebug.ini /etc/php5/mods-available/
+  when: xdebug_ini.stat.exists == True and is_installed.rc == 0 and xdebug.install == '1'
+
+- name: Enable extension
+  shell: php5enmod xdebug
+  when: xdebug_ini.stat.exists == True and is_installed.rc == 0 and xdebug.install == '1'

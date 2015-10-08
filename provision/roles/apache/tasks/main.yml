@@ -1,0 +1,32 @@
+---
+- name: Install Apache
+  sudo: yes
+  apt: pkg=apache2 state=latest
+  when: apache.install == "1"
+
+- name: Install Apache Modules
+  apache2_module: state=present name={{ item }}
+  notify: restart apache
+  with_items:
+    - rewrite
+    - vhost_alias
+    - headers
+    - expires
+    - filter
+    - ssl
+  when: apache.install == "1"
+
+- name: Change default apache2.4 site
+  sudo: yes
+  template: src=vhost24.conf.tpl dest=/etc/apache2/sites-available/000-default.conf
+  notify: restart apache
+  when: apache.install == "1"
+
+- user: name=vagrant groups=www-data append=yes
+
+- name: Create SSL Key Directory
+  file: path=/etc/apache2/ssl state=directory mode=0755
+
+- name: Create SSL Key
+  sudo: yes
+  shell: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj "/C=AU/ST=QLD/L=Brisbane/O=Dis/CN=*.{{ vm.hostname }}"
