@@ -5,7 +5,7 @@ vm:
     #Memory and Cpus if set to empty will use auto generated
     memory: ''
     cpus: ''
-    chosen_provider: libvirt #libvirt
+    chosen_provider: virtualbox #libvirt
 #    chosen_provider: virtualbox #libvirt
     ssh:
         forward: '0'
@@ -21,20 +21,17 @@ vm:
             vflnp_tndgksczzty4:
                 host: '9592'
                 guest: '22'
-#    provider:
-#        virtualbox:
-#            modifyvm:
-#                natdnshostresolver1: 'on'
-#                nictype1: virtio
-#                nictype2: virtio
-#                natdnsproxy1: 'on'
     provider:
-        libvirt:
-            volume_cache: 'unsafe' #see https://github.com/pradels/vagrant-libvirt#domain-specific-options for more
+        virtualbox:
+            modifyvm:
+                natdnshostresolver1: 'on'
+                nictype1: virtio
+                nictype2: virtio
+                natdnsproxy1: 'on'
     synced_folder:
         project_folder:
-            sync_type: 'sshfs'
-            host_machine:  ~/Projects/Temando/project_mnt_test
+            sync_type: 'nfs'
+            host_machine:  ./project_files
             guest_machine: /home/vagrant/project_files
             owner: vagrant
             group: www-data
