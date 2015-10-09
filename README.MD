@@ -193,3 +193,6 @@ Clone the project you wish to use
 ### Accessing Projects
 
 In your hosts directory use the following format *.vagrant.dev55 where * is the project folder name ip address is 192.168.56.101
+
+#### 5. Change Log
+[Change Log](docs/change_log.md)
