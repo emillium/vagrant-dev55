@@ -8,4 +8,4 @@
   when: vm.hostname is defined
 
 - name: Set development
-  lineinfile: dest=/etc/environment line="APPLICATION_ENV='development'"
+  lineinfile: dest=/etc/environment line="APPLICATION_ENV='{{ vm.environment }}'"

@@ -32,7 +32,8 @@ The setup for the vagrant box is a config file in yaml format
 
     vm:
         box: s3than/trusty64 #Ubuntu 14.04
-        hostname: vagrant.dev55 
+        hostname: vagrant.dev55
+        environment: development #Currently only development environment has been tested
         #Memory and Cpus if set to empty will use auto generated
         memory: ''
         cpus: ''
@@ -62,7 +63,7 @@ The setup for the vagrant box is a config file in yaml format
         synced_folder: #supported types are vagrant box defaults and sshfs supported by [vagrant-sshfs](https://github.com/fabiokr/vagrant-sshfs/)
             project_folder:
                 sync_type: 'default'
-                host_machine:  ~/Projects/Temando/project_mnt_test
+                host_machine:  ./project_files
                 guest_machine: /home/vagrant/project_files
                 owner: vagrant
                 group: www-data

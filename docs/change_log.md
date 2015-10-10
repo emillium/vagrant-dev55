@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+- Support for environment setting in config
+- Fix to libvirt setting memory and cpus, string to integer
 
 ## [2.0.0] - 2015-10-09
 ### Changed

@@ -12,6 +12,8 @@
     VirtualDocumentRoot {{ vm.synced_folder.project_folder.guest_machine }}/%1/www
     ServerAlias     *.{{ vm.hostname }}
 
+    SetEnv APPLICATION_ENV "{{ vm.environment }}"
+
     <Directory />
     Options FollowSymLinks
     AllowOverride All
@@ -52,6 +54,8 @@
 
     VirtualDocumentRoot {{ vm.synced_folder.project_folder.guest_machine }}/%1/www
     ServerAlias     *.{{ vm.hostname }}
+
+    SetEnv APPLICATION_ENV "{{ vm.environment }}"
 
     <Directory />
     Options FollowSymLinks
