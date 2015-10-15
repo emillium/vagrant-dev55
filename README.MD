@@ -37,6 +37,20 @@ The setup for the vagrant box is a config file in yaml format
         #Memory and Cpus if set to empty will use auto generated
         memory: ''
         cpus: ''
+        swap_file_path: /swapfile
+        # Use any of the following suffixes
+        # c=1
+        # w=2
+        # b=512
+        # kB=1000
+        # K=1024
+        # MB=1000*1000
+        # M=1024*1024
+        # xM=M
+        # GB=1000*1000*1000
+        # G=1024*1024*1024
+        swap_file_size: 1024M
+        swappiness: 1
         chosen_provider: virtualbox #libvirt
         ssh:
             forward: '0' #If set to 1 then you must have your host agent forwarded in ~/.ssh/config see [issue](http://104.236.178.120/container-boxes/vagrant-dev55/issues/5)
@@ -50,9 +64,12 @@ The setup for the vagrant box is a config file in yaml format
         network:
             private_network: 192.168.56.101
             forwarded_port:
-                vflnp_tndgksczzty4:
+                ssh_forward_port:
                     host: '9592'
                     guest: '22'
+                mysql_forward_port:
+                    host: '9593'
+                    guest: '3306'
         provider: # see [virtualbox](https://docs.vagrantup.com/v2/virtualbox/index.html) & [libvirt](https://github.com/pradels/vagrant-libvirt#domain-specific-options) for more options 
             virtualbox:
                 modifyvm:
@@ -78,7 +95,7 @@ The setup for the vagrant box is a config file in yaml format
         email: 'test'
     server: 
         install: '1'
-        packages: [htop, imagemagick, multitail, tmux, ant]
+        packages: [htop, imagemagick, multitail, tmux, ant, xvfb, chromium-browser]
         timezone: UTC
         locale: en_AU.UTF-8
         hosts:
@@ -112,8 +129,10 @@ The setup for the vagrant box is a config file in yaml format
         install: '1'
         root_password: '123'
         database: db
-        user: user
-        password: password
+        options:
+            bind_address: '0.0.0.0'
+        users:
+            - { name: dbuser, host: '%', password: 1234, priv: '*.*:ALL,GRANT' }
         dump: ''
         adminer: '1'
     newrelic:

@@ -1,5 +1,5 @@
 ---
-- command: /bin/sh "/vagrant/provision/shellScripts/swap.sh"
+- include: swap.yml
 
 - name: Update apt
   sudo: yes

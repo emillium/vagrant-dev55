@@ -13,10 +13,10 @@
   apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
   when: mariadb.install == '1'
 
-- name: Update apt
-  sudo: yes
-  apt: update_cache=yes
-  when: mariadb.install == '1'
+#- name: Update apt
+#  sudo: yes
+#  apt: update_cache=yes
+#  when: mariadb.install == '1'
 
 - name: mariadb | Install MariaDB Packages
   sudo: yes
@@ -51,32 +51,50 @@
   when: mariadb.dump and mariadb.install == '1'
 
 - name: mariadb | Create users
-  mysql_user: name={{ mariadb.user }} password={{ mariadb.password }} priv={{ mariadb.database }}.*:ALL state=present login_user=root login_password={{ mariadb.root_password }}
-  when: mariadb.install == '1'
+  mysql_user:
+    name: "{{ item.name }}"
+    host: "{{ item.host | default('localhost') }}"
+    password: "{{ item.password }}"
+    priv: "{{ item.priv | default('*.*:USAGE') }}"
+    login_user: root
+    login_password: "{{ mariadb.root_password }}"
+    state: present
+  with_items: mariadb.users
+
+#- debug: var="{{ mariadb.options.bind_address }}"
+
+- name: Copy my.cnf global MySQL configuration.
+  template:
+    src: my.cnf.tpl
+    dest: "/etc/mysql/my.cnf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart mariadb
 
 ##Install Adminer Requires Apache
-- name: Install Adminer
-  sudo: yes
-  file: path=/usr/share/adminer state=directory mode=0755
-  when: mariadb.install == '1' and mariadb.adminer == '1'
-
-- name: Download Adminer
-  sudo: yes
-  get_url: url=http://www.adminer.org/latest.php dest=/usr/share/adminer/latest.php
-  when: mariadb.install == '1' and mariadb.adminer == '1'
-
-- name: Link Adminer
-  sudo: yes
-  file: src=/usr/share/adminer/latest.php dest=/usr/share/adminer/adminer.php owner=vagrant group=vagrant state=link
-  when: mariadb.install == '1' and mariadb.adminer == '1'
-
-- name: Create Apache Conf for Adminer
-  sudo: yes
-  lineinfile: dest=/etc/apache2/conf-available/adminer.conf line="Alias /adminer.php /usr/share/adminer/adminer.php" create=yes state=present
-  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
-
-- name: Install Apache Conf for Adminer
-  sudo: yes
-  shell: a2enconf adminer.conf
-  notify: restart apache
-  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
+#- name: Install Adminer
+#  sudo: yes
+#  file: path=/usr/share/adminer state=directory mode=0755
+#  when: mariadb.install == '1' and mariadb.adminer == '1'
+#
+#- name: Download Adminer
+#  sudo: yes
+#  get_url: url=http://www.adminer.org/latest.php dest=/usr/share/adminer/latest.php
+#  when: mariadb.install == '1' and mariadb.adminer == '1'
+#
+#- name: Link Adminer
+#  sudo: yes
+#  file: src=/usr/share/adminer/latest.php dest=/usr/share/adminer/adminer.php owner=vagrant group=vagrant state=link
+#  when: mariadb.install == '1' and mariadb.adminer == '1'
+#
+#- name: Create Apache Conf for Adminer
+#  sudo: yes
+#  lineinfile: dest=/etc/apache2/conf-available/adminer.conf line="Alias /adminer.php /usr/share/adminer/adminer.php" create=yes state=present
+#  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
+#
+#- name: Install Apache Conf for Adminer
+#  sudo: yes
+#  shell: a2enconf adminer.conf
+#  notify: restart apache
+#  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
