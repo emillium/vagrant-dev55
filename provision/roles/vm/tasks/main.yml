@@ -9,3 +9,5 @@
 
 - name: Set development
   lineinfile: dest=/etc/environment line="APPLICATION_ENV='{{ vm.environment }}'"
+
+- lineinfile: dest=/etc/environment line="NODE_ENV='{{ vm.environment }}'"
