@@ -3,11 +3,15 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
 - document update for OSX
 - adding PHP5 GD
 - remote access for MariaDB
 - add packages xvfb, chromium-browser
 - convert swap install to ansible
+- remote access for mariadb
+### Fix
+- ssh known hosts update
 
 ## [2.0.2]
 ### Changed
