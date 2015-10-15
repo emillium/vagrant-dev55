@@ -2,13 +2,27 @@
 vm:
     box: s3than/trusty64
     hostname: vagrant.dev55
+    environment: development #Currently only development environment has been tested
     #Memory and Cpus if set to empty will use auto generated
-    memory: ''
+    memory: '2048'
     cpus: ''
-    chosen_provider: virtualbox #libvirt
-#    chosen_provider: virtualbox #libvirt
+    swap_file_path: /swapfile
+    # Use any of the following suffixes
+    # c=1
+    # w=2
+    # b=512
+    # kB=1000
+    # K=1024
+    # MB=1000*1000
+    # M=1024*1024
+    # xM=M
+    # GB=1000*1000*1000
+    # G=1024*1024*1024
+    swap_file_size: 1024M
+    swappiness: 1
+    chosen_provider: libvirt
     ssh:
-        forward: '0'
+        forward: '1'
         known_hosts_command: "ssh-keyscan -H -T 10"
         known_hosts_file: "/etc/ssh/ssh_known_hosts"
         known_hosts:
@@ -18,20 +32,22 @@ vm:
     network:
         private_network: 192.168.56.101
         forwarded_port:
-            vflnp_tndgksczzty4:
+            ssh_forward_port:
                 host: '9592'
                 guest: '22'
+            mysql_forward_port:
+                host: '9593'
+                guest: '3306'
+            shipping_ui_forward_port:
+                host: '9594'
+                guest: '3000'
     provider:
-        virtualbox:
-            modifyvm:
-                natdnshostresolver1: 'on'
-                nictype1: virtio
-                nictype2: virtio
-                natdnsproxy1: 'on'
+        libvirt:
+            volume_cache: 'none'
     synced_folder:
         project_folder:
-            sync_type: 'nfs'
-            host_machine:  ./project_files
+            sync_type: 'sshfs'
+            host_machine:  ~/projects/temando/project_mnt
             guest_machine: /home/vagrant/project_files
             owner: vagrant
             group: www-data
@@ -42,11 +58,11 @@ dot_files:
     install: '0'
 git:
     install: '1'
-    user_name: 'test'
-    email: 'test'
+    user_name: 'Tim Colbert'
+    email: 'tim.colbert@temando.com'
 server:
     install: '1'
-    packages: [htop, imagemagick, multitail, tmux, ant]
+    packages: [htop, imagemagick, multitail, tmux, ant, xvfb, chromium-browser]
     timezone: UTC
     locale: en_AU.UTF-8
     hosts:
@@ -80,8 +96,10 @@ mariadb:
     install: '1'
     root_password: '123'
     database: db
-    user: user
-    password: password
+    options:
+        bind_address: '0.0.0.0'
+    users:
+        - { name: dbuser, host: '%', password: 1234, priv: '*.*:ALL,GRANT' }
     dump: ''
     adminer: '1'
 newrelic:
@@ -90,7 +108,7 @@ php:
     install: '1'
     ppa: php5
     ioncube: '1'
-    packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2, php5-gd]
+    packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2]
     pecl_with_dependents:
         - package: pecl_http
           package_name: http
@@ -109,12 +127,12 @@ composer:
     auth: >
         {
           "github-oauth": {
-            "github.com": "test"
+            "github.com": "a45768bf91d54290b5c7a40218ae91d676575dd2"
           },
           "http-basic": {
             "packages.temando.com": {
-              "username": "test",
-              "password": "test"
+              "username": "remotedev",
+              "password": "n0mn0mn0m"
             }
           }
         }
