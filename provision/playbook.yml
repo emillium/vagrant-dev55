@@ -6,6 +6,7 @@
   roles:
     - server
     - ssh
+    - tmux
     - git
     - vm
     - nodejs
