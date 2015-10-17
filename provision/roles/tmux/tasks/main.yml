@@ -2,15 +2,16 @@
 - name: Check Tmux version
   shell: tmux -V
   register: tmux_version
+  when: tmux.version == '2'
 
 - name: Check for previous versions of Tmux
   apt: name=tmux state=absent
-  when: tmux_version.stdout != 'tmux 2.0'
+  when: tmux.install == '0'
 
 - name: Add new repository
-  apt_repository: repo='ppa:pi-rho/dev' update_cache=yes
-  when: tmux_version.stdout != 'tmux 2.0'
+  apt_repository: repo='{{ tmux.repo }}' update_cache=yes
+  when: tmux.repo != '' and tmux.install == '1'
 
 - name: Install Tmux
-  apt: name=tmux=2.0-1~ppa1~t state=present
-  when: tmux_version.stdout != 'tmux 2.0'
+  apt: name={{ tmux.package }} state=present
+  when: tmux.install == '1'

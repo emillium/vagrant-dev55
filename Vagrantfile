@@ -5,8 +5,16 @@ dir = File.dirname(File.expand_path(__FILE__))
 host = Vagrant::Util::Platform.platform
 
 require 'yaml'
+require "#{dir}/provision/ruby/deep_merge.rb"
 
 configValues = YAML.load_file("#{dir}/provision/vars/config.yml")
+
+if File.file?("#{dir}/provision/vars/config-custom.yml")
+  custom = YAML.load_file("#{dir}/provision/vars/config-custom.yml")
+  configValues.deep_merge!(custom)
+end
+
+File.open("#{dir}/provision/vars/merge-config.yml", 'w') { |f| YAML.dump(configValues, f) }
 
 vmValues = configValues['vm']
 

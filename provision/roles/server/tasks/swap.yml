@@ -1,25 +1,25 @@
 ---
 - name: Set swap_file variable
   set_fact:
-    swap_file: "{{vm.swap_file_path}}"
+    swap_file: "{{server.swap.swap_file_path}}"
   tags:
     - swap.set.file.path
 
 - name: Check if swap file exists
   stat:
-    path: "{{vm.swap_file_path}}"
+    path: "{{server.swap.swap_file_path}}"
   register: swap_file_check
   tags:
     - swap.file.check
 
 - name: Create swap file
-  command: fallocate -l {{vm.swap_file_size}} {{vm.swap_file_path}}
+  command: fallocate -l {{server.swap.swap_file_size}} {{server.swap.swap_file_path}}
   when: not swap_file_check.stat.exists
   tags:
     - swap.file.create
 
 - name: Change swap file permissions
-  file: path="{{vm.swap_file_path}}"
+  file: path="{{server.swap.swap_file_path}}"
         owner=root
         group=root
         mode=0600
@@ -28,14 +28,14 @@
 
 - name: Format swap file
   sudo: yes
-  command: "mkswap {{vm.swap_file_path}}"
+  command: "mkswap {{server.swap.swap_file_path}}"
   when: not swap_file_check.stat.exists
   tags:
     - swap.file.mkswap
 
 - name: Write swap entry in fstab
   mount: name=none
-         src={{vm.swap_file_path}}
+         src={{server.swap.swap_file_path}}
          fstype=swap
          opts=sw
          passno=0
@@ -54,7 +54,7 @@
 - name: Set swappiness
   sudo: yes
   sysctl:
-    name: vm.swappiness
-    value: "{{vm.swappiness}}"
+    name: server.swap.swappiness
+    value: "{{server.swap.swappiness}}"
   tags:
     - swap.set.swappiness

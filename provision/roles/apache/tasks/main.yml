@@ -16,6 +16,8 @@
     - ssl
   when: apache.install == "1"
 
+- file: path=/etc/apache2/sites-available/default-ssl.conf state=absent
+
 - name: Change default apache2.4 site
   sudo: yes
   template: src=vhost24.conf.tpl dest=/etc/apache2/sites-available/000-default.conf

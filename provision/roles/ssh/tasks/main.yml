@@ -40,9 +40,6 @@
   with_items: vm.ssh.known_hosts
   register: known_hosts
 
-- file: path={{ vm.ssh.known_hosts_file }} state=touch
-
-- lineinfile: dest={{ vm.ssh.known_hosts_file }} line="{{ item.stdout }}" state=present
+- name: Load public keys
+  lineinfile: dest={{ vm.ssh.known_hosts_file }} line="{{ item.stdout }}" state=present
   with_items: known_hosts.results
-
-

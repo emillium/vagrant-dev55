@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Allow the use of config-custom.yml file to over-ride default settings
 ### Changed
 - document update for OSX
 - adding PHP5 GD
@@ -10,8 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - add packages xvfb, chromium-browser
 - convert swap install to ansible
 - remote access for mariadb
+- tmux allow ppa settings and version details
 ### Fix
-- ssh known hosts update
+- ssh known hosts update no longer duplicates records
 
 ## [2.0.2]
 ### Changed

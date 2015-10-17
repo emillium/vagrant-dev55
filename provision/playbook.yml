@@ -2,19 +2,19 @@
 - hosts: all
   sudo: true
   vars_files:
-    - vars/config.yml
+    - vars/merge-config.yml
   roles:
-    - server
-    - ssh
-    - tmux
-    - git
-    - vm
-    - nodejs
-    - apache
-    - mariadb
-    - php
-    - newrelic
-    - xdebug
-    - composer
-    - dotfiles
-    - app
+     - vm
+     - server
+     - ssh
+     - tmux
+     - git
+     - nodejs
+     - apache
+     - mariadb
+     - php
+     - newrelic
+     - xdebug
+     - composer
+     - dotfiles
+     - app
