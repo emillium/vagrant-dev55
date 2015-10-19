@@ -2,7 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## Unreleased
+- Add name to node_dev development task
+
+## [2.1.0]
 ### Added
 - Allow the use of config-custom.yml file to over-ride default settings
 ### Changed
