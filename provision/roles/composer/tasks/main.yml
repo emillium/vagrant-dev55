@@ -14,6 +14,5 @@
 
 - file: path=/home/vagrant/.composer/auth.json state=touch
 
-#- lineinfile: dest=/home/vagrant/.composer/auth.json line="{{composer.auth}}"
-- template: src=auth.tpl dest=/home/vagrant/.composer/auth.json
+- template: src=auth.tpl dest=/home/vagrant/.composer/auth.json group=vagrant owner=vagrant
   when: is_installed.rc == 0 and composer.install == '1' and composer.auth

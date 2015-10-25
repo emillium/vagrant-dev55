@@ -24,6 +24,9 @@ vm:
             mysql_forward_port:
                 host: '9593'
                 guest: '3306'
+            xdebug_forward_port:
+                host: '9001'
+                guest: '9001'
     provider: # see [virtualbox](https://docs.vagrantup.com/v2/virtualbox/index.html) & [libvirt](https://github.com/pradels/vagrant-libvirt#domain-specific-options) for more options
         virtualbox:
             modifyvm:
@@ -129,6 +132,16 @@ php:
           priority: 35
 xdebug:
     install: '1'
+    idekey: 'PHPSTORM'
+    remote_enable: 'on'
+    remote_mode: 'req'
+    remote_port: '9001'
+    remote_connect_back: 1
+    profiler_enable: 0
+    profiler_enable_trigger: 1
+    remote_autostart: 0
+    max_nesting_level: 300
+    cli_color: 1
 composer:
     install: '1'
     auth: ''

@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 - Add name to node_dev development task
+- Fix to composer auth.json permissions
+- Add xdebug settings and template
 
 ## [2.1.0]
 ### Added

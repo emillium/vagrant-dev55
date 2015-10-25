@@ -1,0 +1,12 @@
+zend_extension=xdebug.so
+xdebug.idekey={{ item.idekey }}
+xdebug.remote_enable={{ item.remote_enable }}
+xdebug.remote_mode={{ item.remote_mode }}
+xdebug.remote_port={{ item.remote_port }}
+xdebug.remote_connect_back={{ item.remote_connect_back }}
+xdebug.profiler_enable={{ item.profiler_enable }}
+xdebug.profiler_enable_trigger={{ item.profiler_enable_trigger }}
+xdebug.remote_autostart={{ item.remote_autostart }}
+debug.remote_autostart={{ item.remote_autostart }}
+xdebug.max_nesting_level={{ item.max_nesting_level }}
+xdebug.cli_color={{ item.cli_color }}
