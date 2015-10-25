@@ -23,8 +23,10 @@
     mode=0644
   with_items:
     - "{{ xdebug }}"
-  register: xdebug_ini
   when: is_installed.rc == 0 and xdebug.install == '1'
+
+- stat: path=/etc/php5/mods-available/xdebug.ini
+  register: xdebug_ini
 
 - name: Enable extension
   shell: php5enmod xdebug
