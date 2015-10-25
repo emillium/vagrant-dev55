@@ -61,8 +61,6 @@
     state: present
   with_items: mariadb.users
 
-#- debug: var="{{ mariadb.options.bind_address }}"
-
 - name: Copy my.cnf global MySQL configuration.
   template:
     src: my.cnf.tpl

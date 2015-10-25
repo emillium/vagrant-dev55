@@ -16,7 +16,8 @@
     - ssl
   when: apache.install == "1"
 
-- file: path=/etc/apache2/sites-available/default-ssl.conf state=absent
+- name: Remove default ssl conf
+  file: path=/etc/apache2/sites-available/default-ssl.conf state=absent
 
 - name: Change default apache2.4 site
   sudo: yes
@@ -24,7 +25,8 @@
   notify: restart apache
   when: apache.install == "1"
 
-- user: name=vagrant groups=www-data append=yes
+- name: Set user
+  user: name=vagrant groups=www-data append=yes
 
 - name: Create SSL Key Directory
   file: path=/etc/apache2/ssl state=directory mode=0755

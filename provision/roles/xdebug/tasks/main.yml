@@ -25,7 +25,8 @@
     - "{{ xdebug }}"
   when: is_installed.rc == 0 and xdebug.install == '1'
 
-- stat: path=/etc/php5/mods-available/xdebug.ini
+- name: Confirm ini install
+  stat: path=/etc/php5/mods-available/xdebug.ini
   register: xdebug_ini
 
 - name: Enable extension

@@ -32,4 +32,5 @@
   shell: 'sed -i 3i\ "zend_extension = /usr/lib/php5/20121212/ioncube_loader_lin_5.5.so" /etc/php5/apache2/php.ini'
   when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
+- name: Clear temp files
 - file: path=/home/vagrant/ioncube state=absent

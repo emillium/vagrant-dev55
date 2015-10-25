@@ -9,10 +9,13 @@
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer creates=/usr/local/bin/composer
   when: is_installed.rc == 0 and composer.install == '1'
 
-- file: path=/home/vagrant/.composer state=directory owner=vagrant group=vagrant
+- name: Composer home folder
+  file: path=/home/vagrant/.composer state=directory owner=vagrant group=vagrant
   when: is_installed.rc == 0 and composer.install == '1' and composer.auth
 
-- file: path=/home/vagrant/.composer/auth.json state=touch
+- name: Composer auth file
+  file: path=/home/vagrant/.composer/auth.json state=touch
 
-- template: src=auth.tpl dest=/home/vagrant/.composer/auth.json group=vagrant owner=vagrant
+- name: Composer auth template
+  template: src=auth.tpl dest=/home/vagrant/.composer/auth.json group=vagrant owner=vagrant
   when: is_installed.rc == 0 and composer.install == '1' and composer.auth
