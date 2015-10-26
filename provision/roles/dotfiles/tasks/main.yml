@@ -6,3 +6,7 @@
 - name: Install Bash Files
   shell: yes n | cp -i /vagrant/provision/files/bash/.bash_git /home/vagrant/.bash_git
   when: dot_files.install == '0'
+
+- name: Install Dot Files
+  shell: yes n | bash -c '$(curl -fsSL {{ dot_files.dot_files_url }})' && source ~/.bashrc
+  when: dot_files.dot_files_url

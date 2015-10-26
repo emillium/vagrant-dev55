@@ -20,7 +20,8 @@
   unarchive: src=/home/vagrant/ioncube/ioncube_loaders_lin_x86-64.tar.gz dest=/home/vagrant/ioncube/tmp copy=no
   when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
-- stat: path=/home/vagrant/ioncube/tmp/ioncube/ioncube_loader_lin_5.5.so
+- name: Check Ion Cube unpack
+  stat: path=/home/vagrant/ioncube/tmp/ioncube/ioncube_loader_lin_5.5.so
   register: ioncube_stat
 
 - name: Copy IonCube
@@ -33,4 +34,4 @@
   when: php.install == '1' and php.ioncube == '1' and checkmyconf.rc != 0
 
 - name: Clear temp files
-- file: path=/home/vagrant/ioncube state=absent
+  file: path=/home/vagrant/ioncube state=absent
