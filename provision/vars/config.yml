@@ -96,6 +96,7 @@ tmux:
     version: '2'
 dot_files:
     install: '0'
+    dot_files_url: ''
 git:
     install: '1'
     user_name: ''

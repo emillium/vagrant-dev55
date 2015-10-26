@@ -9,4 +9,4 @@
 
 - name: Install Dot Files
   shell: yes n | bash -c '$(curl -fsSL {{ dot_files.dot_files_url }})' && source ~/.bashrc
-  when: dot_files.dot_files_url
+  when: dot_files.install == '1'
