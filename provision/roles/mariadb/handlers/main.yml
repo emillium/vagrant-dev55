@@ -1,3 +1,6 @@
 ---
 - name: restart mariadb
   service: "name=mysql state=restarted sleep=5"
+
+- name: restart apache maria
+  service: "name=apache2 state=restarted"

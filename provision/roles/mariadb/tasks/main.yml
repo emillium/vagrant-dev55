@@ -1,8 +1,4 @@
 ---
-# Retrieve the current hostname, because {{ ansible_hostname }} still contains the old name
-- shell: hostname
-  register: current_hostname
-
 - name: Add MariaDB-Repository
   sudo: yes
   apt_repository: repo='deb http://mirror3.layerjet.com/mariadb/repo/10.1/ubuntu {{ ansible_distribution_release }} main' state=present
@@ -12,11 +8,12 @@
   sudo: yes
   apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcbcb082a1bb943db
   when: mariadb.install == '1'
+  register: maria_rep
 
 - name: Update apt
   sudo: yes
   apt: update_cache=yes
-  when: mariadb.install == '1'
+  when: mariadb.install == '1' and maria_rep.changed != false
 
 - name: mariadb | Install MariaDB Packages
   sudo: yes
@@ -29,7 +26,7 @@
 - name: mariadb | Update root password for all root accounts
   mysql_user: name=root host={{ item }} check_implicit_admin=yes password={{ mariadb.root_password }} login_user=root login_password={{ mariadb.root_password }}
   with_items:
-    - "{{ current_hostname.stdout | lower }}"
+    - "{{ vm.hostname | lower }}"
     - 127.0.0.1
     - ::1
     - localhost
@@ -39,7 +36,7 @@
   mysql_user: name='' host={{ item }} state=absent login_user=root login_password={{ mariadb.root_password }}
   with_items:
     - localhost
-    - "{{ current_hostname.stdout | lower }}"
+    - "{{ vm.hostname | lower }}"
   when: mariadb.install == '1'
 
 - name: mariadb | Create databases
@@ -71,28 +68,35 @@
   notify: restart mariadb
 
 #Install Adminer Requires Apache
+- name: Check if Apache is installed
+  command: dpkg-query -l apache2
+  register: is_installed
+  failed_when: is_installed.rc > 1
+  changed_when: no
+
 - name: Install Adminer
   sudo: yes
   file: path=/usr/share/adminer state=directory mode=0755
-  when: mariadb.install == '1' and mariadb.adminer == '1'
+  when: mariadb.install == '1' and mariadb.adminer == '1' and is_installed.rc == 0
 
 - name: Download Adminer
   sudo: yes
   get_url: url=http://www.adminer.org/latest.php dest=/usr/share/adminer/latest.php
-  when: mariadb.install == '1' and mariadb.adminer == '1'
+  when: mariadb.install == '1' and mariadb.adminer == '1' and is_installed.rc == 0
 
 - name: Link Adminer
   sudo: yes
   file: src=/usr/share/adminer/latest.php dest=/usr/share/adminer/adminer.php owner=vagrant group=vagrant state=link
-  when: mariadb.install == '1' and mariadb.adminer == '1'
+  when: mariadb.install == '1' and mariadb.adminer == '1' and is_installed.rc == 0
 
 - name: Create Apache Conf for Adminer
   sudo: yes
   lineinfile: dest=/etc/apache2/conf-available/adminer.conf line="Alias /adminer.php /usr/share/adminer/adminer.php" create=yes state=present
-  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
+  when: mariadb.install == '1' and mariadb.adminer == '1' and is_installed.rc == 0
+  register: adminer_conf
 
 - name: Install Apache Conf for Adminer
   sudo: yes
   shell: a2enconf adminer.conf
-  notify: restart apache
-  when: apache.install == '1' and mariadb.install == '1' and mariadb.adminer == '1'
+  notify: restart apache maria
+  when: mariadb.install == '1' and mariadb.adminer == '1' and is_installed.rc == 0 and adminer_conf.changed == true

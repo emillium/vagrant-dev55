@@ -3,7 +3,7 @@
 
 - name: Update apt
   sudo: yes
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=86400
 
 - name: Install System Packages
   sudo: yes
@@ -31,6 +31,7 @@
 
 - name: Set default system language pack
   shell: locale-gen {{server.locale}}
+  register: locale
   sudo: yes
 
 - include: hosts.yml

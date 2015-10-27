@@ -1,11 +1,8 @@
 ---
 - name: Add ppa Repository
   sudo: yes
-  apt_repository: repo=ppa:ondrej/{{ php.ppa }}
-
-- name: Update apt
-  sudo: yes
-  apt: update_cache=yes
+  apt_repository: repo=ppa:ondrej/{{ php.ppa }} state=present update_cache=true
+  register: repo
 
 - name: Install php5
   sudo: yes

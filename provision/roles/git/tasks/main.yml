@@ -7,3 +7,11 @@
 - name: Copy in git config
   template: src=git-config.tpl dest=/home/vagrant/.gitconfig
   when: git.install == '1' and git.email and git.user_name
+
+- name: Install GitConfig if present
+  copy: src=~/.gitconfig dest=/home/vagrant/.gitconfig owner=vagrant group=vagrant mode=0644 force=no
+  when: git.install == '1' and not git.email and not git.user_name
+
+- name: Install GitIgnore if present
+  copy: src=~/.gitignore dest=/home/vagrant/.gitignore owner=vagrant group=vagrant mode=0644 force=no
+  when: git.install == '1'

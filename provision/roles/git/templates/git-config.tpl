@@ -6,4 +6,4 @@
 [color]
     ui = true
 [core]
-    excludesfile=/home/vagrant/.gitignore
+    excludesfile={{ git.exclude | default("~/.gitignore") }}

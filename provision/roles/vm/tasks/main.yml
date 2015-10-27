@@ -1,11 +1,18 @@
 ---
 - name: Set the hostname in /etc/hostname
-  shell: echo {{ vm.hostname }} > /etc/hostname
+  lineinfile: dest=/etc/hostname line="{{ vm.hostname }}" create=yes state=present
+  when: vm.hostname is defined
+
+- name: Check the hostname
+  shell: hostname
+  register: host
+  changed_when: "host.rc != 0"
   when: vm.hostname is defined
 
 - name: Set the hostname
   shell: hostname {{ vm.hostname }}
-  when: vm.hostname is defined
+  register: host
+  when: vm.hostname is defined and host.stdout != vm.hostname
 
 - name: Set development
   lineinfile: dest=/etc/environment line="APPLICATION_ENV='{{ vm.environment }}'"
