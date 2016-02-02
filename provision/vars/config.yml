@@ -119,13 +119,13 @@ php:
     ioncube: '1'
     packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2]
     pecl_with_dependents:
-        - package: pecl_http
+        - package: pecl_http-2.5.5
           package_name: http
           depends_on:
-               - package: raphf
+               - package: raphf-1.1.2
                  package_name: raphf
                  priority: 25
-               - package: propro
+               - package: propro-1.0.2
                  package_name: propro
                  priority: 30
           priority: 35
