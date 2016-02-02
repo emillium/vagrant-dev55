@@ -60,7 +60,7 @@ eg.. The following in config-custom will over-ride the default environment setti
                   - github.com
                   - bitbucket.org
             network:
-                private_network: 192.168.56.102
+                private_network: 192.168.56.101
                 forwarded_port:
                     ssh_forward_port:
                         host: '9592'
@@ -219,7 +219,7 @@ Clone the project you wish to use
 
 ### Accessing Projects
 
-In your hosts directory use the following format *.vagrant.dev55 where * is the project folder name ip address is 192.168.56.102
+In your hosts directory use the following format *.vagrant.dev55 where * is the project folder name ip address is 192.168.56.101
 
 #### 5. Change Log
 [Change Log](docs/change_log.md)
