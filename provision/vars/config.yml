@@ -16,16 +16,16 @@ vm:
           - github.com
           - bitbucket.org
     network:
-        private_network: 192.168.56.101
+        private_network: 192.168.56.102
         forwarded_port:
             ssh_forward_port:
-                host: '9592'
+                host: '9594'
                 guest: '22'
             mysql_forward_port:
-                host: '9593'
+                host: '9595'
                 guest: '3306'
             xdebug_forward_port:
-                host: '9002'
+                host: '9003'
                 guest: '9001'
     provider: # see [virtualbox](https://docs.vagrantup.com/v2/virtualbox/index.html) & [libvirt](https://github.com/pradels/vagrant-libvirt#domain-specific-options) for more options
         virtualbox:
@@ -36,7 +36,7 @@ vm:
                 natdnsproxy1: 'on'
     synced_folder:
         project_folder:
-            sync_type: 'default'
+            sync_type: 'sshfs'
             host_machine:  ./project_files
             guest_machine: /home/vagrant/project_files
             owner: vagrant
@@ -99,6 +99,8 @@ dot_files:
     dot_files_url: ''
 git:
     install: '1'
+    email: khoa.tran@temando.com
+    user_name: khoa.tran
 apache:
     install: '1'
 mariadb:

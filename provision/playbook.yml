@@ -13,7 +13,7 @@
      - apache
      - mariadb
      - php
-     - newrelic
+#     - newrelic
      - xdebug
      - composer
      - dotfiles

@@ -54,7 +54,7 @@
 - name: Set swappiness
   sudo: yes
   sysctl:
-    name: server.swap.swappiness
+    name: vm.swappiness
     value: "{{server.swap.swappiness}}"
   tags:
     - swap.set.swappiness
