@@ -68,9 +68,6 @@ server:
         - url: 127.0.0.1
           name: single-sign-on
           local: '1'
-        - url: 192.168.20.21
-          name: packages.temando.com
-          local: '0'
         - url: 192.168.7.175
           name: webservices.hunterexpress.com.au
           local: '0'
@@ -117,7 +114,7 @@ php:
     install: '1'
     ppa: php5
     ioncube: '1'
-    packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2]
+    packages: [php5-cli, php5-curl, php-http, php5-imagick, php5-intl, php5-mcrypt, php5-mysql, php5-redis, php5-ssh2, php5-memcached]
     pecl_with_dependents:
         - package: pecl_http-2.5.5
           package_name: http
