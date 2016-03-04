@@ -9,7 +9,7 @@ sudo apt-get install -y -qq software-properties-common >/dev/null
 type ansible >/dev/null 2>&1 || {
     echo 'Install Ansible'
     # Add Ansible Repository & Install Ansible
-    sudo add-apt-repository -y ppa:ansible/ansible >/dev/null
+    sudo add-apt-repository -y ppa:ansible/ansible-1.9 >/dev/null
     sudo apt-get update  -y -qq >/dev/null
     sudo apt-get install -y -qq ansible >/dev/null
 
