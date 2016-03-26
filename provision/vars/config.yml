@@ -63,7 +63,7 @@ server:
         # GB=1000*1000*1000
         # G=1024*1024*1024
         swap_file_size: 2048M
-        swappiness: 1
+        swappiness: 50
     hosts:
         - url: 127.0.0.1
           name: single-sign-on
