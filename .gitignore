@@ -4,3 +4,4 @@ provision/files/ssh/*
 !provision/files/ssh/.gitkeep
 project_files/*
 !project_files/.gitkeep
+!project_files/README.md
