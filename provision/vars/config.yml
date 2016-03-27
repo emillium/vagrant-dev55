@@ -1,6 +1,6 @@
 ---
 vm:
-    box: s3than/trusty64
+    box: emillium/trusty64 #s3than/trusty64
     hostname: vagrant.dev55
     environment: development #Currently only development environment has been tested
     #Memory and Cpus if set to empty will use auto generated
