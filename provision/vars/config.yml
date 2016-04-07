@@ -4,7 +4,7 @@ vm:
     hostname: vagrant.dev55
     environment: development #Currently only development environment has been tested
     #Memory and Cpus if set to empty will use auto generated
-    memory: ''
+    memory: '2048'
     cpus: ''
     chosen_provider: virtualbox
     ssh:
