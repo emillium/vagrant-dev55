@@ -1,0 +1,7 @@
+---
+vm:
+  hostname: vagrant.test55
+  memory: '2048'
+  network:
+    private_network: 192.168.57.101
+

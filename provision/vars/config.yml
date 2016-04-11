@@ -4,7 +4,7 @@ vm:
     hostname: vagrant.dev55
     environment: development #Currently only development environment has been tested
     #Memory and Cpus if set to empty will use auto generated
-    memory: '2048'
+    memory: ''
     cpus: ''
     chosen_provider: virtualbox
     ssh:
@@ -19,13 +19,13 @@ vm:
         private_network: 192.168.56.101
         forwarded_port:
             ssh_forward_port:
-                host: '9592'
+                host: '9692'
                 guest: '22'
             mysql_forward_port:
-                host: '9593'
+                host: '9693'
                 guest: '3306'
             xdebug_forward_port:
-                host: '9002'
+                host: '9102'
                 guest: '9001'
     provider: # see [virtualbox](https://docs.vagrantup.com/v2/virtualbox/index.html) & [libvirt](https://github.com/pradels/vagrant-libvirt#domain-specific-options) for more options
         virtualbox:
