@@ -21,6 +21,11 @@ brew install virtualbox
 ```
 vagrant plugin install vagrant-sshfs
 vagrant plugin install vagrant-bindfs
+```
+
+3. Setup the caching of packages for faster provisioning
+
+```
 vagrant plugin install vagrant-cachier
 ```
 
