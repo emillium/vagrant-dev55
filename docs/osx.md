@@ -21,6 +21,7 @@ brew install virtualbox
 ```
 vagrant plugin install vagrant-sshfs
 vagrant plugin install vagrant-bindfs
+vagrant plugin install vagrant-cachier
 ```
 
 ### Configure
