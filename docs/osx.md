@@ -23,6 +23,12 @@ vagrant plugin install vagrant-sshfs
 vagrant plugin install vagrant-bindfs
 ```
 
+3. Setup the caching of packages for faster provisioning
+
+```
+vagrant plugin install vagrant-cachier
+```
+
 ### Configure
 
 Open up ```provision/vars/config.yaml``` and edit the *sync_type* field, change it's value to 'sshfs'.
