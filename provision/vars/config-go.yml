@@ -16,7 +16,7 @@ vm:
           - github.com
           - bitbucket.org
     network:
-        private_network: 192.168.56.105
+        private_network: 192.168.56.101
         forwarded_port:
             ssh_forward_port:
                 host: '9692'
