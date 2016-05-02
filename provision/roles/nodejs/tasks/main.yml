@@ -1,7 +1,7 @@
 ---
 - name: Make sure nodejs_version is set correctly.
   assert:
-    that: nodejs.nodejs_version in [ "0.10", "0.12" ]
+    that: nodejs.nodejs_version in [ "4.x", "5.x" ]
 
 - name: Install nodejs repository
   sudo: yes
